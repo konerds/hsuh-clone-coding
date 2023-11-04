@@ -1,4 +1,5 @@
 import tw from 'tailwind-styled-components';
+import PageLanding from './pages/PageLanding';
 
 type TPropsDivApp = {
   $isDev: boolean;
@@ -8,7 +9,11 @@ ${(p) => (p.$isDev ? 'debug-screens' : '')}
 `;
 
 const App = () => {
-  return <DivApp $isDev={import.meta.env.NODE_ENV !== 'production'}></DivApp>;
+  return (
+    <DivApp $isDev={import.meta.env.NODE_ENV !== 'production'}>
+      <PageLanding />
+    </DivApp>
+  );
 };
 
 export default App;

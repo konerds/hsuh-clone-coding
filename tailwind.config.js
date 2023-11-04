@@ -28,6 +28,9 @@ export default {
         'shuttle-gray': '#5E6774',
         harp: '#E9EFF1',
       },
+      content: {
+        hamburger: "'\\e602'",
+      },
     },
   },
   future: {
@@ -51,6 +54,10 @@ export default {
         },
         '.scroll-none::-webkit-scrollbar': {
           display: 'none',
+        },
+        '.tap-highlight-color': {
+          '-webkit-tap-highlight-color': '#00000000',
+          'tap-highlight-color': '#00000000',
         },
       });
     }),
