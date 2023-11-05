@@ -1,0 +1,52 @@
+name: ghpages
+
+on:
+  push:
+    branches: ['master']
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: github-pages
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}
+      cancel-in-progress: true
+    steps:
+      - name: Use source code in repository
+        uses: actions/checkout@v3
+
+      - name: Use node 18 runtime.
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Cache dependency in node_modules directory
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Check is cache hit
+        if: steps.cache.outputs.cache-hit == 'true'
+        run: echo 'npm cache has been hit'
+
+      - name: Install dependency
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          CI: false
+          VITE_IS_USE_PROXY: ${{ vars.VITE_IS_USE_PROXY }}
+          VITE_URL_API_SERVER: ${{ vars.VITE_URL_API_SERVER }}
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
