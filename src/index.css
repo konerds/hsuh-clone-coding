@@ -80,6 +80,14 @@
     @apply mx-0 mt-[20px] text-[38px] font-bold leading-[44px];
   }
 
+  h2 {
+    @apply mt-[20px] text-[32px] font-bold leading-[36px];
+  }
+
+  h3 {
+    @apply mt-[20px] text-[24px] leading-[30px];
+  }
+
   h1,
   h2,
   h3,

@@ -1,10 +1,10 @@
 import { FC } from 'react';
 import tw from 'tailwind-styled-components';
-import CmpSectionHeaderHome from './CmpSectionHeaderHome';
-import CmpSectionClient from './CmpSectionClient';
-import CmpSectionFeature from './CmpSectionFeature';
-import CmpSectionAbout from './CmpSectionAbout';
-import CmpSectionCTA from './CmpSectionCTA';
+import CmpSectionHeaderHome from '../CmpSectionHeaderHome';
+import CmpSectionClient from '../client/CmpSectionClient';
+import CmpSectionFeature from '../feature/CmpSectionFeature';
+import CmpSectionAbout from '../about/CmpSectionAbout';
+import CmpSectionCTA from '../cta/CmpSectionCTA';
 
 const DivWrapperMain = tw.div`
 `;
@@ -18,7 +18,7 @@ const CmpLayoutLanding: FC<TPropsCmpLayoutLanding> = ({ posTopScroll }) => {
     <DivWrapperMain>
       <CmpSectionHeaderHome />
       <CmpSectionClient posTopScroll={posTopScroll} />
-      <CmpSectionFeature />
+      <CmpSectionFeature posTopScroll={posTopScroll} />
       <CmpSectionAbout />
       <CmpSectionCTA />
     </DivWrapperMain>

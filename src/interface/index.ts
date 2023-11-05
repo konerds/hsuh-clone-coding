@@ -14,3 +14,17 @@ export interface IObjClient {
   introduce: string;
   listImage: string[];
 }
+
+export interface IObjContentFeature {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+export interface IObjFeature {
+  introduce: {
+    title: string[];
+    description: string;
+  };
+  listContent: IObjContentFeature[];
+}

@@ -4,10 +4,10 @@ import {
   customRPTransitionDuration,
   customRPTransitionOpacity,
   customRPTransitionBackToFront,
-} from '../../utils';
+} from '../../../utils';
 import { Transition } from 'react-transition-group';
-import { IObjClient } from '../../interface';
-import { getObjClient } from '../../api';
+import { IObjClient } from '../../../interface';
+import { getObjClient } from '../../../api';
 
 const durationTransitionIn = 100;
 const durationTransition = 1000;
@@ -43,7 +43,7 @@ const DivContainerIntroduce = tw.div`
 transition-[opacity,transform] [transform-style:preserve-3d]
 `;
 
-const DivWrapperTextParagraph = tw.div`
+const DivWrapperParagraphIntroduce = tw.div`
 mx-0 mb-[2rem] mt-0 max-desktop:static
 `;
 
@@ -105,9 +105,9 @@ const CmpSectionClient: FC<TPropsCmpSectionClient> = ({ posTopScroll }) => {
                     ],
                   }}
                 >
-                  <DivWrapperTextParagraph>
+                  <DivWrapperParagraphIntroduce>
                     <DivTextParagraph>{objClient?.introduce}</DivTextParagraph>
-                  </DivWrapperTextParagraph>
+                  </DivWrapperParagraphIntroduce>
                   <DivContainerListClient>
                     {objClient?.listImage.map((urlImage, idxUrlImage) => {
                       return (
