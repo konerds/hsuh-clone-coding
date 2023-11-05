@@ -10,7 +10,7 @@ ${(p) => (p.$isDev ? 'debug-screens' : '')}
 
 const App = () => {
   return (
-    <DivApp $isDev={import.meta.env.MODE !== 'production'}>
+    <DivApp $isDev={import.meta.env.DEV}>
       <PageLanding />
     </DivApp>
   );
