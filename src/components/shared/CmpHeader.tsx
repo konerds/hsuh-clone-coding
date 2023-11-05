@@ -3,39 +3,30 @@ import tw from 'tailwind-styled-components';
 import AssetImageLogo from '../../assets/image/img-logo-header.png';
 import { EViewport, IObjMenuHeader } from '../../interface';
 import { getListObjMenuHeader } from '../../api';
-import { customRP, queryByMaxWidth } from '../../utils';
+import {
+  customRPTransitionBottomToTop,
+  customRPTransitionDuration,
+  customRPTransitionOpacity,
+  queryByMaxWidth,
+} from '../../utils';
 import { useMediaQuery } from 'react-responsive';
 import AnimateHeight from 'react-animate-height';
 import { Transition } from 'react-transition-group';
+
+const durationTransition = 500;
+
+const { default: defaultTransitionOpacity, transition: objTransitionOpacity } =
+  customRPTransitionOpacity;
+
+const {
+  default: defaultTransitionBottomToTop,
+  transition: objTransitionBottomToTop,
+} = customRPTransitionBottomToTop;
 
 const HeaderWrapper = tw.header`
 absolute inset-[0%_0%_auto] z-[11] block overflow-hidden bg-transparent px-[2.5rem] py-[20px]
 `;
 
-const durationTransitionDivContainerNav = 500;
-const defaultTransitionDivContainerNav = customRP({
-  transitionDuration: `${durationTransitionDivContainerNav}ms`,
-  opacity: 0,
-  transform:
-    'translate3d(0px, 100%, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)',
-});
-const objTransitionDivContainerNav = {
-  entering: customRP({
-    opacity: 0,
-    transform:
-      'translate3d(0px, 100%, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)',
-  }),
-  entered: customRP({
-    opacity: 1,
-    transform:
-      'translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)',
-  }),
-  exiting: {},
-  exited: {},
-  unmounted: {},
-};
-// opacity 0 -> 1
-// transform 3d y 100% -> 0px
 const DivContainerNav = tw.div`
 relative mx-auto flex h-full w-full max-w-[73.25rem] items-center justify-between py-0 transition-[opacity,transform] [transform-style:preserve-3d]
 `;
@@ -108,12 +99,15 @@ const CmpHeader: FC = () => {
   }, []);
   return (
     <HeaderWrapper>
-      <Transition in={isMounting} timeout={durationTransitionDivContainerNav}>
+      <Transition in={isMounting} timeout={durationTransition}>
         {(stateTransition) => (
           <DivContainerNav
             style={{
-              ...defaultTransitionDivContainerNav,
-              ...objTransitionDivContainerNav[stateTransition],
+              ...customRPTransitionDuration(durationTransition),
+              ...defaultTransitionOpacity,
+              ...objTransitionOpacity[stateTransition],
+              ...defaultTransitionBottomToTop,
+              ...objTransitionBottomToTop[stateTransition],
             }}
           >
             <DivWrapperMenuNav>

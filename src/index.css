@@ -75,4 +75,21 @@
   img {
     @apply inline-block max-w-full border-0 align-middle;
   }
+
+  h1 {
+    @apply mx-0 mt-[20px] text-[38px] font-bold leading-[44px];
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply mb-[10px] font-bold;
+  }
+
+  p {
+    @apply mb-[10px] mt-0;
+  }
 }
