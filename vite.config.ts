@@ -15,6 +15,7 @@ if (process.env.NODE_ENV === 'development') {
 export default ({ mode }) => {
   Object.assign(process.env, loadEnv(mode, process.cwd()));
   return defineConfig({
+    base: mode === 'development' ? '/' : '/hsuh-clone-coding',
     plugins: [
       react(),
       {
