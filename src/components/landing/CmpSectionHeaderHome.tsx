@@ -13,6 +13,7 @@ import ImageOverlayHighlight05 from '../../assets/image/img-overlay-highlight-05
 import ImageOverlayMac from '../../assets/image/img-overlay-mac.png';
 import ImageDashboardHomeHeader from '../../assets/image/img-dashboard-header-home.png';
 
+const durationTransitionIn = 500;
 const durationTransition = 1000;
 
 const defaultTransitionDuration =
@@ -78,7 +79,7 @@ mx-0 mt-0
 `;
 
 const LinkBtnDownload = tw.a`
-relative z-[1] mx-auto flex h-[62px] w-[272px] max-w-full items-center justify-center rounded-[40px] border-[1px] border-[color:#f4f4f429] bg-[image:linear-gradient(to_right,#4c85fa,#236bfe)] px-[26px] py-[20px] transition-opacity [text-decoration:none]
+relative z-[1] mx-auto flex h-[62px] w-[272px] max-w-full items-center justify-center rounded-[40px] border-[1px] border-[color:#f4f4f429] bg-[image:linear-gradient(to_right,#4c85fa,#236bfe)] px-[26px] py-[20px] transition-opacity [text-decoration:none] hover:border-[color:#f4f4f4] hover:bg-transparent hover:bg-[image:linear-gradient(transparent,transparent)]
 `;
 
 const ImgOverlayHighlight05 = tw.img`
@@ -110,7 +111,7 @@ mt-[6rem]
 `;
 
 const ImgDashboardHomeHeader = tw.img`
-transition-transform [transform-style:preserve-3d]
+transition-[opacity,transform] [transform-style:preserve-3d]
 `;
 
 const CmpSectionHeaderHome: FC = () => {
@@ -123,7 +124,7 @@ const CmpSectionHeaderHome: FC = () => {
       <DivWrapper>
         <DivContainer>
           <DivWrapperPushingHeader>
-            <Transition in={isMounting} timeout={durationTransition}>
+            <Transition in={isMounting} timeout={durationTransitionIn}>
               {(stateTransitionDivHeaderHome) => (
                 <DivHeaderHeaderHome
                   style={{
@@ -214,6 +215,10 @@ const CmpSectionHeaderHome: FC = () => {
                             ...defaultTransitionDuration,
                             ...defaultTransitionOpacity,
                             ...objTransitionOpacity[
+                              stateTransitionDivHeaderHome
+                            ],
+                            ...defaultTransitionBottomToTop,
+                            ...objTransitionBottomToTop[
                               stateTransitionDivHeaderHome
                             ],
                           }}

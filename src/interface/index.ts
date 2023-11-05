@@ -9,3 +9,8 @@ export interface IObjMenuHeader {
   name: string;
   url: string;
 }
+
+export interface IObjClient {
+  introduce: string;
+  listImage: string[];
+}

@@ -9,11 +9,15 @@ import CmpSectionCTA from './CmpSectionCTA';
 const DivWrapperMain = tw.div`
 `;
 
-const CmpLayoutLanding: FC = () => {
+type TPropsCmpLayoutLanding = {
+  posTopScroll: number;
+};
+
+const CmpLayoutLanding: FC<TPropsCmpLayoutLanding> = ({ posTopScroll }) => {
   return (
     <DivWrapperMain>
       <CmpSectionHeaderHome />
-      <CmpSectionClient />
+      <CmpSectionClient posTopScroll={posTopScroll} />
       <CmpSectionFeature />
       <CmpSectionAbout />
       <CmpSectionCTA />

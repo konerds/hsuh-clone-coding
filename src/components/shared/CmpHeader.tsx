@@ -13,7 +13,8 @@ import { useMediaQuery } from 'react-responsive';
 import AnimateHeight from 'react-animate-height';
 import { Transition } from 'react-transition-group';
 
-const durationTransition = 500;
+const durationTransitionIn = 500;
+const durationTransition = 1000;
 
 const { default: defaultTransitionOpacity, transition: objTransitionOpacity } =
   customRPTransitionOpacity;
@@ -60,11 +61,11 @@ inline-block min-w-max rounded-[32px] border-[1px] border-[color:#f4f4f429] bg-t
 `;
 
 const DivWrapperMenuHamburgerMobile = tw.div`
-tap-highlight-color relative float-right cursor-pointer select-text p-[18px] text-[24px] max-desktop:ml-[20px] max-desktop:border-[1px] max-desktop:border-[color:#96a0b526] max-tablet:px-[14px] max-tablet:py-[12px] max-mobile-landscape:ml-0
+relative float-right cursor-pointer select-text p-[18px] text-[24px] tap-highlight-color max-desktop:ml-[20px] max-desktop:border-[1px] max-desktop:border-[color:#96a0b526] max-tablet:px-[14px] max-tablet:py-[12px] max-mobile-landscape:ml-0
 `;
 
 const DivMenuHamburgerMobile = tw.div`
-before:content-hamburger font-['webflow-icons'] font-normal leading-[1] [font-style:normal] [font-variant:normal] [speak:none] [text-transform:none]
+font-['webflow-icons'] font-normal leading-[1] [font-style:normal] [font-variant:normal] [speak:none] [text-transform:none] before:content-hamburger
 `;
 
 const DivNavOverlay = tw.div`
@@ -99,7 +100,7 @@ const CmpHeader: FC = () => {
   }, []);
   return (
     <HeaderWrapper>
-      <Transition in={isMounting} timeout={durationTransition}>
+      <Transition in={isMounting} timeout={durationTransitionIn}>
         {(stateTransition) => (
           <DivContainerNav
             style={{

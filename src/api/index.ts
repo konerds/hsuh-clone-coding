@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { IObjMenuHeader } from '../interface';
+import { IObjClient, IObjMenuHeader } from '../interface';
 
 const instanceAxios: AxiosInstance = axios.create({
   baseURL:
@@ -14,6 +14,13 @@ export const getListObjMenuHeader = async () => {
     const response = await instanceAxios.get<IObjMenuHeader[]>(
       '/resource/menu-header',
     );
+    return response.data;
+  } catch (e) {}
+};
+
+export const getObjClient = async () => {
+  try {
+    const response = await instanceAxios.get<IObjClient>('/resource/client');
     return response.data;
   } catch (e) {}
 };
