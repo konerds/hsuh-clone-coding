@@ -12,7 +12,7 @@ import { getObjClient } from '../../api';
 const durationTransitionIn = 100;
 const durationTransition = 1000;
 
-const defaultTransitionDuration =
+const customRPTransitionDurationDefault =
   customRPTransitionDuration(durationTransition);
 
 const { default: defaultTransitionOpacity, transition: objTransitionOpacity } =
@@ -94,7 +94,7 @@ const CmpSectionClient: FC<TPropsCmpSectionClient> = ({ posTopScroll }) => {
               {(stateTransitionDivContainerIntroduce) => (
                 <DivContainerIntroduce
                   style={{
-                    ...defaultTransitionDuration,
+                    ...customRPTransitionDurationDefault,
                     ...defaultTransitionOpacity,
                     ...objTransitionOpacity[
                       stateTransitionDivContainerIntroduce

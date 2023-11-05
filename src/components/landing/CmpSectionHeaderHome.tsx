@@ -16,7 +16,7 @@ import ImageDashboardHomeHeader from '../../assets/image/img-dashboard-header-ho
 const durationTransitionIn = 500;
 const durationTransition = 1000;
 
-const defaultTransitionDuration =
+const customRPTransitionDurationDefault =
   customRPTransitionDuration(durationTransition);
 
 const { default: defaultTransitionOpacity, transition: objTransitionOpacity } =
@@ -128,7 +128,7 @@ const CmpSectionHeaderHome: FC = () => {
               {(stateTransitionDivHeaderHome) => (
                 <DivHeaderHeaderHome
                   style={{
-                    ...defaultTransitionDuration,
+                    ...customRPTransitionDurationDefault,
                     ...defaultTransitionOpacity,
                     ...objTransitionOpacity[stateTransitionDivHeaderHome],
                   }}
@@ -141,7 +141,7 @@ const CmpSectionHeaderHome: FC = () => {
                             <DivWrapperAnimation key={idxElTitle}>
                               <H1LineTitle
                                 style={{
-                                  ...defaultTransitionDuration,
+                                  ...customRPTransitionDurationDefault,
                                   ...defaultTransitionBottomToTop,
                                   ...objTransitionBottomToTop[
                                     stateTransitionDivHeaderHome
@@ -159,7 +159,7 @@ const CmpSectionHeaderHome: FC = () => {
                       <DivWrapperAnimation>
                         <PDesc
                           style={{
-                            ...defaultTransitionDuration,
+                            ...customRPTransitionDurationDefault,
                             ...defaultTransitionBottomToTop,
                             ...objTransitionBottomToTop[
                               stateTransitionDivHeaderHome
@@ -176,7 +176,7 @@ const CmpSectionHeaderHome: FC = () => {
                       <LinkBtnDownload
                         href="https://webflow.com/Caddyflow"
                         style={{
-                          ...defaultTransitionDuration,
+                          ...customRPTransitionDurationDefault,
                           ...defaultTransitionOpacity,
                           ...objTransitionOpacity[stateTransitionDivHeaderHome],
                         }}
@@ -197,22 +197,31 @@ const CmpSectionHeaderHome: FC = () => {
                     </DivDownloadHeaderHome>
                   </DivContainerContentHeaderHome>
                   <DivContainerImageHeaderHome>
-                    <ImgOverlayHighlight04
-                      src={ImageOverlayHighlight04}
-                      style={{
-                        ...defaultTransitionDuration,
-                        ...defaultTransitionOpacity,
-                        ...objTransitionOpacity[stateTransitionDivHeaderHome],
-                      }}
-                      loading="lazy"
-                      alt=""
-                    />
+                    <Transition
+                      in={stateTransitionDivHeaderHome === 'entered'}
+                      timeout={durationTransition}
+                    >
+                      {(stateTransitionImgOverlayHighlight04) => (
+                        <ImgOverlayHighlight04
+                          src={ImageOverlayHighlight04}
+                          style={{
+                            ...customRPTransitionDurationDefault,
+                            ...defaultTransitionOpacity,
+                            ...objTransitionOpacity[
+                              stateTransitionImgOverlayHighlight04
+                            ],
+                          }}
+                          loading="lazy"
+                          alt=""
+                        />
+                      )}
+                    </Transition>
                     <DivImageDashboard>
                       <DivWrapperAnimation>
                         <ImgDashboardHomeHeader
                           src={ImageDashboardHomeHeader}
                           style={{
-                            ...defaultTransitionDuration,
+                            ...customRPTransitionDurationDefault,
                             ...defaultTransitionOpacity,
                             ...objTransitionOpacity[
                               stateTransitionDivHeaderHome
