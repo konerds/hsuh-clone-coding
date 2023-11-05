@@ -4,15 +4,21 @@ on:
   push:
     branches: ['master']
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: github-pages
-    permissions:
-      contents: write
-    concurrency:
-      group: ${{ github.workflow }}
-      cancel-in-progress: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Use source code in repository
         uses: actions/checkout@v3
@@ -21,22 +27,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-
-      - name: Cache dependency in node_modules directory
-        id: cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Check is cache hit
-        if: steps.cache.outputs.cache-hit == 'true'
-        run: echo 'npm cache has been hit'
+          cache: 'npm'
 
       - name: Install dependency
-        run: npm ci
+        run: npm install
 
       - name: Build
         run: npm run build
@@ -45,8 +39,14 @@ jobs:
           VITE_IS_USE_PROXY: ${{ vars.VITE_IS_USE_PROXY }}
           VITE_URL_API_SERVER: ${{ vars.VITE_URL_API_SERVER }}
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          path: './dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
