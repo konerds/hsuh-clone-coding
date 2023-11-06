@@ -4,24 +4,12 @@ import {
   customRPTransitionDuration,
   customRPTransitionOpacity,
   customRPTransitionBackToFront,
+  useGetIsStartableAnimating,
+  preloadImageBySource,
 } from '../../../utils';
 import { Transition } from 'react-transition-group';
-import { IObjClient } from '../../../interface';
+import { IObjClient, TPropsNeedPositionTopScroll } from '../../../interface';
 import { getObjClient } from '../../../api';
-
-const durationTransitionIn = 100;
-const durationTransition = 1000;
-
-const customRPTransitionDurationDefault =
-  customRPTransitionDuration(durationTransition);
-
-const { default: defaultTransitionOpacity, transition: objTransitionOpacity } =
-  customRPTransitionOpacity;
-
-const {
-  default: defaultTransitionBackToFront,
-  transition: objTransitionBackToFront,
-} = customRPTransitionBackToFront;
 
 const SectionWrapper = tw.section`
 mt-[352px] bg-transparent max-desktop:mt-[164px] max-tablet:mt-[134px]
@@ -59,69 +47,80 @@ const ImgLogoClient = tw.img`
 mr-[40px] w-auto max-tablet:mr-[24px] max-mobile-landscape:mr-0 max-mobile-landscape:mt-[24px]
 `;
 
-type TPropsCmpSectionClient = {
-  posTopScroll: number;
-};
+type TPropsCmpSectionClient = TPropsNeedPositionTopScroll;
 
 const CmpSectionClient: FC<TPropsCmpSectionClient> = ({ posTopScroll }) => {
-  const [isStartingAnimate, setIsStartingAnimate] = useState(false);
-  const [isFetched, setIsFetched] = useState(false);
+  const timeoutTransition = 0;
   const [objClient, setObjClient] = useState<IObjClient>();
-  const refSectionWrapper = useRef<HTMLElement>(null);
+  const [isDonePreload, setIsDonePreload] = useState(false);
+  const refDivContainerIntroduce = useRef<HTMLDivElement>(null);
+  const isStartableAnimatingDivContainerIntroduce = useGetIsStartableAnimating(
+    posTopScroll,
+    refDivContainerIntroduce,
+    {
+      pointDestTouching: 'top',
+    },
+  );
   useEffect(() => {
     getObjClient().then((dataObjClient) => {
       setObjClient(dataObjClient);
-      setIsFetched(true);
     });
   }, []);
   useEffect(() => {
-    if (refSectionWrapper.current) {
-      if (
-        isFetched &&
-        refSectionWrapper.current.getBoundingClientRect().bottom <=
-          window.innerHeight * 1.1
-      ) {
-        setIsStartingAnimate(true);
-      }
-    }
-  }, [isFetched, posTopScroll, refSectionWrapper]);
+    preloadImageBySource(objClient?.listImage).then((isDone) => {
+      setIsDonePreload(isDone);
+    });
+  }, [objClient]);
   return (
-    <SectionWrapper ref={refSectionWrapper}>
+    <SectionWrapper>
       <DivWrapper>
         <DivContainer>
           <DivWrapperPaddedVertical>
-            <Transition in={isStartingAnimate} timeout={durationTransitionIn}>
-              {(stateTransitionDivContainerIntroduce) => (
-                <DivContainerIntroduce
-                  style={{
-                    ...customRPTransitionDurationDefault,
-                    ...defaultTransitionOpacity,
-                    ...objTransitionOpacity[
-                      stateTransitionDivContainerIntroduce
-                    ],
-                    ...defaultTransitionBackToFront,
-                    ...objTransitionBackToFront[
-                      stateTransitionDivContainerIntroduce
-                    ],
-                  }}
-                >
-                  <DivWrapperParagraphIntroduce>
-                    <DivTextParagraph>{objClient?.introduce}</DivTextParagraph>
-                  </DivWrapperParagraphIntroduce>
-                  <DivContainerListClient>
-                    {objClient?.listImage.map((urlImage, idxUrlImage) => {
-                      return (
-                        <ImgLogoClient
-                          key={idxUrlImage}
-                          src={urlImage}
-                          loading="lazy"
-                          alt=""
-                        />
-                      );
-                    })}
-                  </DivContainerListClient>
-                </DivContainerIntroduce>
-              )}
+            <Transition
+              in={
+                !!objClient &&
+                isDonePreload &&
+                isStartableAnimatingDivContainerIntroduce
+              }
+              timeout={timeoutTransition}
+            >
+              {(stateTransitionDivContainerIntroduce) => {
+                const durationTransition = 1000;
+                return (
+                  <DivContainerIntroduce
+                    ref={refDivContainerIntroduce}
+                    style={{
+                      ...customRPTransitionDuration(durationTransition),
+                      ...customRPTransitionOpacity.default,
+                      ...customRPTransitionOpacity.transition[
+                        stateTransitionDivContainerIntroduce
+                      ],
+                      ...customRPTransitionBackToFront.default,
+                      ...customRPTransitionBackToFront.transition[
+                        stateTransitionDivContainerIntroduce
+                      ],
+                    }}
+                  >
+                    <DivWrapperParagraphIntroduce>
+                      <DivTextParagraph>
+                        {objClient?.introduce}
+                      </DivTextParagraph>
+                    </DivWrapperParagraphIntroduce>
+                    <DivContainerListClient>
+                      {objClient?.listImage.map((urlImage, idxUrlImage) => {
+                        return (
+                          <ImgLogoClient
+                            key={idxUrlImage}
+                            src={urlImage}
+                            loading="lazy"
+                            alt=""
+                          />
+                        );
+                      })}
+                    </DivContainerListClient>
+                  </DivContainerIntroduce>
+                );
+              }}
             </Transition>
           </DivWrapperPaddedVertical>
         </DivContainer>

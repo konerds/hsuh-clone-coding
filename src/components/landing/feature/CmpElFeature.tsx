@@ -1,15 +1,16 @@
 import { FC, useState, useRef, useEffect } from 'react';
 import tw from 'tailwind-styled-components';
-import { IObjContentFeature } from '../../../interface';
-import { customRPTransitionBottomToTop } from '../../../utils';
+import {
+  IObjContentFeature,
+  TPropsNeedPositionTopScroll,
+} from '../../../interface';
+import {
+  customRPTransitionBottomToTop,
+  customRPTransitionDuration,
+  preloadImageBySource,
+  useGetIsStartableAnimating,
+} from '../../../utils';
 import { Transition } from 'react-transition-group';
-
-const timeoutTransition = 0;
-
-const {
-  default: defaultTransitionBottomToTop,
-  transition: objTransitionBottomToTop,
-} = customRPTransitionBottomToTop;
 
 const DivWrapper = tw.div`
 overflow-hidden [grid-area:span_1_\/_span_1_\/_span_1_\/_span_1]
@@ -35,81 +36,115 @@ const PDescFeature = tw.p`
 mb-0 leading-[200%] text-[color:#1e1e2052] transition-transform [transform-style:preserve-3d]
 `;
 
-type TPropsCmpElFeature = {
+type TPropsCmpElFeature = TPropsNeedPositionTopScroll & {
   objContent: IObjContentFeature;
-  posTopScroll: number;
-  isStartingAnimateParent: boolean;
-  customRPTransitionDurationDefault: React.CSSProperties;
 };
 
-const CmpElFeature: FC<TPropsCmpElFeature> = ({
-  objContent,
-  posTopScroll,
-  isStartingAnimateParent,
-  customRPTransitionDurationDefault,
-}) => {
-  const [isStartingAnimate, setIsStartingAnimate] = useState(false);
-  const refDivWrapper = useRef<HTMLDivElement>(null);
+const CmpElFeature: FC<TPropsCmpElFeature> = ({ posTopScroll, objContent }) => {
+  const timeoutTransition = 0;
+  const [isDonePreload, setIsDonePreload] = useState(false);
+  const refImgIconFeature = useRef<HTMLImageElement>(null);
+  const refH3TitleFeature = useRef<HTMLHeadingElement>(null);
+  const refPDescFeature = useRef<HTMLParagraphElement>(null);
+  const isStartableAnimatingImgIconFeature = useGetIsStartableAnimating(
+    posTopScroll,
+    refImgIconFeature,
+  );
+  const isStartableAnimatingH3TitleFeature = useGetIsStartableAnimating(
+    posTopScroll,
+    refH3TitleFeature,
+  );
+  const isStartableAnimatingPDescFeature = useGetIsStartableAnimating(
+    posTopScroll,
+    refPDescFeature,
+  );
   useEffect(() => {
-    if (refDivWrapper.current) {
-      if (
-        refDivWrapper.current.getBoundingClientRect().bottom <=
-        window.innerHeight * 1.1
-      ) {
-        setIsStartingAnimate(true);
-      }
-    }
-  }, [posTopScroll, refDivWrapper]);
+    preloadImageBySource(objContent.icon).then((isDone) => {
+      setIsDonePreload(isDone);
+    });
+  }, [objContent]);
   return (
-    <Transition
-      in={isStartingAnimate && isStartingAnimateParent}
-      timeout={timeoutTransition}
-    >
-      {(stateTransitionSectionWrapper) => (
-        <DivWrapper ref={refDivWrapper}>
-          <DivContainer>
-            <DivWrapperAnimation>
-              <ImgIconFeature
-                src={objContent.icon}
-                style={{
-                  ...customRPTransitionDurationDefault,
-                  ...defaultTransitionBottomToTop,
-                  ...objTransitionBottomToTop[stateTransitionSectionWrapper],
-                }}
-                loading="lazy"
-                alt=""
-              />
-            </DivWrapperAnimation>
-          </DivContainer>
-          <DivContainer>
-            <DivWrapperAnimation>
-              <H3TitleFeature
-                style={{
-                  ...customRPTransitionDurationDefault,
-                  ...defaultTransitionBottomToTop,
-                  ...objTransitionBottomToTop[stateTransitionSectionWrapper],
-                }}
-              >
-                {objContent.title}
-              </H3TitleFeature>
-            </DivWrapperAnimation>
-          </DivContainer>
-          <DivContainer>
-            <DivWrapperAnimation>
-              <PDescFeature
-                style={{
-                  ...customRPTransitionDurationDefault,
-                  ...defaultTransitionBottomToTop,
-                  ...objTransitionBottomToTop[stateTransitionSectionWrapper],
-                }}
-              >
-                {objContent.description}
-              </PDescFeature>
-            </DivWrapperAnimation>
-          </DivContainer>
-        </DivWrapper>
-      )}
-    </Transition>
+    <DivWrapper>
+      <DivContainer>
+        <DivWrapperAnimation>
+          <Transition
+            in={isDonePreload && isStartableAnimatingImgIconFeature}
+            timeout={timeoutTransition}
+          >
+            {(stateTransitionImgIconFeature) => {
+              const durationTransition = 1000;
+              return (
+                <ImgIconFeature
+                  ref={refImgIconFeature}
+                  src={objContent.icon}
+                  style={{
+                    ...customRPTransitionDuration(durationTransition),
+                    ...customRPTransitionBottomToTop.default,
+                    ...customRPTransitionBottomToTop.transition[
+                      stateTransitionImgIconFeature
+                    ],
+                  }}
+                  loading="lazy"
+                  alt=""
+                />
+              );
+            }}
+          </Transition>
+        </DivWrapperAnimation>
+      </DivContainer>
+      <DivContainer>
+        <DivWrapperAnimation>
+          <Transition
+            in={isStartableAnimatingH3TitleFeature}
+            timeout={timeoutTransition}
+          >
+            {(stateTransitionH3TitleFeature) => {
+              const durationTransition = 1000;
+              return (
+                <H3TitleFeature
+                  ref={refH3TitleFeature}
+                  style={{
+                    ...customRPTransitionDuration(durationTransition),
+                    ...customRPTransitionBottomToTop.default,
+                    ...customRPTransitionBottomToTop.transition[
+                      stateTransitionH3TitleFeature
+                    ],
+                  }}
+                >
+                  {objContent.title}
+                </H3TitleFeature>
+              );
+            }}
+          </Transition>
+        </DivWrapperAnimation>
+      </DivContainer>
+      <DivContainer>
+        <DivWrapperAnimation>
+          <Transition
+            in={isStartableAnimatingPDescFeature}
+            timeout={timeoutTransition}
+          >
+            {(stateTransitionPDescFeature) => {
+              const durationTransition = 1000;
+              return (
+                <PDescFeature
+                  ref={refPDescFeature}
+                  style={{
+                    ...customRPTransitionDuration(durationTransition),
+                    ...customRPTransitionBottomToTop.default,
+                    ...customRPTransitionBottomToTop.transition[
+                      stateTransitionPDescFeature
+                    ],
+                  }}
+                >
+                  {objContent.description}
+                </PDescFeature>
+              );
+            }}
+          </Transition>
+        </DivWrapperAnimation>
+      </DivContainer>
+    </DivWrapper>
   );
 };
 

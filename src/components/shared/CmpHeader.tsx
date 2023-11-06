@@ -1,28 +1,22 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useRef, useEffect } from 'react';
 import tw from 'tailwind-styled-components';
 import AssetImageLogo from '../../assets/image/img-logo-header.png';
-import { EViewport, IObjMenuHeader } from '../../interface';
+import {
+  TPropsNeedPositionTopScroll,
+  EViewport,
+  IObjMenuHeader,
+} from '../../interface';
 import { getListObjMenuHeader } from '../../api';
 import {
   customRPTransitionBottomToTop,
   customRPTransitionDuration,
   customRPTransitionOpacity,
   queryByMaxWidth,
+  useGetIsStartableAnimating,
 } from '../../utils';
 import { useMediaQuery } from 'react-responsive';
 import AnimateHeight from 'react-animate-height';
 import { Transition } from 'react-transition-group';
-
-const durationTransitionIn = 500;
-const durationTransition = 1000;
-
-const { default: defaultTransitionOpacity, transition: objTransitionOpacity } =
-  customRPTransitionOpacity;
-
-const {
-  default: defaultTransitionBottomToTop,
-  transition: objTransitionBottomToTop,
-} = customRPTransitionBottomToTop;
 
 const HeaderWrapper = tw.header`
 absolute inset-[0%_0%_auto] z-[11] block overflow-hidden bg-transparent px-[2.5rem] py-[20px]
@@ -80,8 +74,10 @@ const LinkNavOverlay = tw.a`
 relative mx-auto block p-[20px] text-left text-[18px] font-medium leading-[27px] text-[color:#1e1e20a3] transition-[color] duration-200 ease-[ease] [text-decoration:none] hover:text-[color:#1e1e20]
 `;
 
-const CmpHeader: FC = () => {
-  const [isMounting, setIsMounting] = useState(false);
+type TPropsCmpHeader = TPropsNeedPositionTopScroll;
+
+const CmpHeader: FC<TPropsCmpHeader> = ({ posTopScroll }) => {
+  const timeoutTransition = 0;
   const isWithinTablet = useMediaQuery(queryByMaxWidth(EViewport.DESKTOP));
   const isWithinMobilePortrait = useMediaQuery(
     queryByMaxWidth(EViewport.MOBILE_LANDSCAPE),
@@ -90,8 +86,15 @@ const CmpHeader: FC = () => {
     [],
   );
   const [isOpenedMenuHamburger, setIsOpenedMenuHamburger] = useState(false);
+  const refDivContainerNav = useRef<HTMLDivElement>(null);
+  const isStartableAnimatingDivContainerNav = useGetIsStartableAnimating(
+    posTopScroll,
+    refDivContainerNav,
+    {
+      pointDestTouching: 'top',
+    },
+  );
   useEffect(() => {
-    setIsMounting(true);
     getListObjMenuHeader().then((dataListObjMenuHeader) => {
       if (dataListObjMenuHeader) {
         setListObjMenuHeader(dataListObjMenuHeader);
@@ -100,58 +103,74 @@ const CmpHeader: FC = () => {
   }, []);
   return (
     <HeaderWrapper>
-      <Transition in={isMounting} timeout={durationTransitionIn}>
-        {(stateTransition) => (
-          <DivContainerNav
-            style={{
-              ...customRPTransitionDuration(durationTransition),
-              ...defaultTransitionOpacity,
-              ...objTransitionOpacity[stateTransition],
-              ...defaultTransitionBottomToTop,
-              ...objTransitionBottomToTop[stateTransition],
-            }}
-          >
-            <DivWrapperMenuNav>
-              <LinkHome>
-                <ImgLogo src={AssetImageLogo} loading="lazy" alt="" />
-              </LinkHome>
-              {!isWithinTablet && (
-                <NavWrapperMenuDesktop>
-                  {listObjMenuHeader?.map((objMenuHeader, idxObjMenuHeader) => {
-                    return (
-                      <LinkNavDesktop
-                        key={idxObjMenuHeader}
-                        href={objMenuHeader.url}
-                      >
-                        {objMenuHeader.name}
-                      </LinkNavDesktop>
-                    );
-                  })}
-                </NavWrapperMenuDesktop>
-              )}
-            </DivWrapperMenuNav>
-            <DivWrapperBtnNav>
-              {!isWithinMobilePortrait && (
-                <LinkBtnSignup href="https://webflow.com/Caddyflow">
-                  Create Account
-                </LinkBtnSignup>
-              )}
-              {isWithinTablet && (
-                <DivWrapperMenuHamburgerMobile
-                  onClick={() => {
-                    setIsOpenedMenuHamburger(!isOpenedMenuHamburger);
-                  }}
-                >
-                  <DivMenuHamburgerMobile></DivMenuHamburgerMobile>
-                </DivWrapperMenuHamburgerMobile>
-              )}
-            </DivWrapperBtnNav>
-          </DivContainerNav>
-        )}
+      <Transition
+        in={listObjMenuHeader.length > 0 && isStartableAnimatingDivContainerNav}
+        timeout={timeoutTransition}
+      >
+        {(stateTransition) => {
+          const durationTransition = 1000;
+          return (
+            <DivContainerNav
+              ref={refDivContainerNav}
+              style={{
+                ...customRPTransitionDuration(durationTransition),
+                ...customRPTransitionOpacity.default,
+                ...customRPTransitionOpacity.transition[stateTransition],
+                ...customRPTransitionBottomToTop.default,
+                ...customRPTransitionBottomToTop.transition[stateTransition],
+              }}
+            >
+              <DivWrapperMenuNav>
+                <LinkHome>
+                  <ImgLogo src={AssetImageLogo} loading="lazy" alt="" />
+                </LinkHome>
+                {!isWithinTablet && (
+                  <NavWrapperMenuDesktop>
+                    {listObjMenuHeader.map(
+                      (objMenuHeader, idxObjMenuHeader) => {
+                        return (
+                          <LinkNavDesktop
+                            key={idxObjMenuHeader}
+                            href={objMenuHeader.url}
+                          >
+                            {objMenuHeader.name}
+                          </LinkNavDesktop>
+                        );
+                      },
+                    )}
+                  </NavWrapperMenuDesktop>
+                )}
+              </DivWrapperMenuNav>
+              <DivWrapperBtnNav>
+                {!isWithinMobilePortrait && (
+                  <LinkBtnSignup href="https://webflow.com/Caddyflow">
+                    Create Account
+                  </LinkBtnSignup>
+                )}
+                {isWithinTablet && (
+                  <DivWrapperMenuHamburgerMobile
+                    onClick={() => {
+                      setIsOpenedMenuHamburger(!isOpenedMenuHamburger);
+                    }}
+                  >
+                    <DivMenuHamburgerMobile></DivMenuHamburgerMobile>
+                  </DivWrapperMenuHamburgerMobile>
+                )}
+              </DivWrapperBtnNav>
+            </DivContainerNav>
+          );
+        }}
       </Transition>
       <AnimateHeight
         duration={500}
-        height={isWithinTablet && isOpenedMenuHamburger ? 'auto' : 0}
+        height={
+          listObjMenuHeader.length > 0 &&
+          isStartableAnimatingDivContainerNav &&
+          isWithinTablet &&
+          isOpenedMenuHamburger
+            ? 'auto'
+            : 0
+        }
       >
         <DivNavOverlay>
           {isWithinTablet && isOpenedMenuHamburger && (

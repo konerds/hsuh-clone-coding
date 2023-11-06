@@ -1,5 +1,6 @@
 import tw from 'tailwind-styled-components';
 import PageLanding from './pages/PageLanding';
+import { usePositionScrollWindow } from './utils';
 
 type TPropsDivApp = {
   $isDev: boolean;
@@ -9,9 +10,10 @@ ${(p) => (p.$isDev ? 'debug-screens' : '')}
 `;
 
 const App = () => {
+  const posTopScroll = usePositionScrollWindow('y');
   return (
     <DivApp $isDev={import.meta.env.DEV}>
-      <PageLanding />
+      <PageLanding posTopScroll={posTopScroll} />
     </DivApp>
   );
 };

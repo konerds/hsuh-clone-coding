@@ -1,5 +1,11 @@
 import axios, { AxiosInstance } from 'axios';
-import { IObjClient, IObjFeature, IObjMenuHeader } from '../interface';
+import {
+  IObjAbout,
+  IObjClient,
+  IObjFeature,
+  IObjHeaderHome,
+  IObjMenuHeader,
+} from '../interface';
 
 const instanceAxios: AxiosInstance = axios.create({
   baseURL:
@@ -18,6 +24,15 @@ export const getListObjMenuHeader = async () => {
   } catch (e) {}
 };
 
+export const getObjHeaderHome = async () => {
+  try {
+    const response = await instanceAxios.get<IObjHeaderHome>(
+      '/resource/header-home',
+    );
+    return response.data;
+  } catch (e) {}
+};
+
 export const getObjClient = async () => {
   try {
     const response = await instanceAxios.get<IObjClient>('/resource/client');
@@ -28,6 +43,13 @@ export const getObjClient = async () => {
 export const getObjFeature = async () => {
   try {
     const response = await instanceAxios.get<IObjFeature>('/resource/feature');
+    return response.data;
+  } catch (e) {}
+};
+
+export const getListObjAbout = async () => {
+  try {
+    const response = await instanceAxios.get<IObjAbout[]>('/resource/about');
     return response.data;
   } catch (e) {}
 };

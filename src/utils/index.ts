@@ -78,6 +78,65 @@ export const usePositionScrollWindow = (axis: 'x' | 'y') => {
     window.addEventListener('scroll', updatePosition);
     updatePosition();
     return () => window.removeEventListener('scroll', updatePosition);
-  }, []);
+  }, [axis]);
   return positionScroll;
+};
+
+export const useGetIsStartableAnimating = <T extends HTMLElement>(
+  posTopScroll: number,
+  refDivContainer: React.RefObject<T>,
+  additional?: {
+    isBidirectional?: boolean;
+    pointDestTouching?: 'top' | 'bottom';
+    flagAdditional?: boolean;
+    multiplier?: number;
+  },
+) => {
+  const [isStartableAnimating, setIsStartableAnimating] = useState(false);
+  useEffect(() => {
+    if (refDivContainer.current) {
+      const flagAdditional = additional?.flagAdditional || true;
+      const positionTouching =
+        additional?.pointDestTouching === 'top'
+          ? refDivContainer.current.getBoundingClientRect().top
+          : refDivContainer.current.getBoundingClientRect().bottom;
+      const heightInnerWindowAdjusted =
+        window.innerHeight * (additional?.multiplier || 1);
+      setIsStartableAnimating(
+        flagAdditional &&
+          (additional?.isBidirectional
+            ? positionTouching >= -1.5 * heightInnerWindowAdjusted
+            : true) &&
+          positionTouching <= heightInnerWindowAdjusted,
+      );
+    }
+  }, [posTopScroll, refDivContainer, additional]);
+  return isStartableAnimating;
+};
+
+export const preloadImageBySource: (
+  sourceAny?: string | string[],
+) => Promise<any> = async (sourceAny?: string | string[]) => {
+  if (Array.isArray(sourceAny) && sourceAny.length > 0) {
+    return Promise.all(
+      sourceAny.map((elSource) => {
+        return preloadImageBySource(elSource);
+      }),
+    );
+  } else {
+    return new Promise<boolean>((resolve, reject) => {
+      if (typeof sourceAny === 'string') {
+        const instanceImage = new Image();
+        instanceImage.onload = () => {
+          resolve(true);
+        };
+        instanceImage.onerror = instanceImage.onabort = () => {
+          reject();
+        };
+        instanceImage.src = sourceAny;
+      } else {
+        resolve(false);
+      }
+    });
+  }
 };

@@ -1,24 +1,14 @@
 import { FC, useState, useRef, useEffect } from 'react';
 import tw from 'tailwind-styled-components';
-import { IObjFeature } from '../../../interface';
+import { IObjFeature, TPropsNeedPositionTopScroll } from '../../../interface';
 import { getObjFeature } from '../../../api';
 import CmpElFeature from './CmpElFeature';
 import {
   customRPTransitionBottomToTop,
   customRPTransitionDuration,
+  useGetIsStartableAnimating,
 } from '../../../utils';
 import { Transition } from 'react-transition-group';
-
-const durationTransitionIn = 0;
-const durationTransition = 1000;
-
-const customRPTransitionDurationDefault =
-  customRPTransitionDuration(durationTransition);
-
-const {
-  default: defaultTransitionBottomToTop,
-  transition: objTransitionBottomToTop,
-} = customRPTransitionBottomToTop;
 
 const SectionWrapper = tw.section`
 mt-0 bg-transparent
@@ -45,7 +35,7 @@ mx-auto max-w-[672px] text-center
 `;
 
 const DivWrapperTitleIntroduce = tw.div`
-mb-2rem mx-0 mt-0
+mx-0 mb-[2rem] mt-0
 `;
 
 const DivWrapperAnimation = tw.div`
@@ -68,100 +58,114 @@ const DivContainerListFeature = tw.div`
 grid gap-[4rem] [grid-auto-columns:1fr] [grid-template-columns:1fr_1fr_1fr] [grid-template-rows:auto] max-desktop:[grid-template-columns:1fr]
 `;
 
-type TPropsCmpSectionFeature = {
-  posTopScroll: number;
-};
+type TPropsCmpSectionFeature = TPropsNeedPositionTopScroll;
 
 const CmpSectionFeature: FC<TPropsCmpSectionFeature> = ({ posTopScroll }) => {
-  const [isStartingAnimate, setIsStartingAnimate] = useState(false);
-  const [isFetched, setIsFetched] = useState(false);
+  const timeoutTransition = 0;
   const [objFeature, setObjFeature] = useState<IObjFeature>();
-  const refSectionWrapper = useRef<HTMLElement>(null);
+  const refH2TitleIntroduce = useRef<HTMLHeadingElement>(null);
+  const refPDescIntroduce = useRef<HTMLParagraphElement>(null);
+  const isStartableAnimatingH2TitleIntroduce = useGetIsStartableAnimating(
+    posTopScroll,
+    refH2TitleIntroduce,
+    {
+      pointDestTouching: 'top',
+    },
+  );
+  const isStartableAnimatingPDescIntroduce = useGetIsStartableAnimating(
+    posTopScroll,
+    refPDescIntroduce,
+    {
+      pointDestTouching: 'top',
+    },
+  );
   useEffect(() => {
     getObjFeature().then((dataObjFeature) => {
       setObjFeature(dataObjFeature);
-      setIsFetched(true);
     });
   }, []);
-  useEffect(() => {
-    if (refSectionWrapper.current) {
-      if (
-        isFetched &&
-        refSectionWrapper.current.getBoundingClientRect().bottom <=
-          window.innerHeight * 1.5
-      ) {
-        setIsStartingAnimate(true);
-      }
-    }
-  }, [isFetched, posTopScroll, refSectionWrapper]);
   return (
-    <Transition in={isStartingAnimate} timeout={durationTransitionIn}>
-      {(stateTransitionSectionWrapper) => (
-        <SectionWrapper ref={refSectionWrapper}>
-          <DivWrapper>
-            <DivContainer>
-              <DivWrapperPaddedVertical>
-                <DivContainerIntroduce>
-                  <DivWrapperIntroduce>
-                    <DivWrapperTitleIntroduce>
-                      {objFeature?.introduce.title.map(
-                        (titleIntroduce, idxTitleIntroduce) => {
-                          return (
-                            <DivWrapperAnimation key={idxTitleIntroduce}>
-                              <H2TitleIntroduce
-                                style={{
-                                  ...customRPTransitionDurationDefault,
-                                  ...defaultTransitionBottomToTop,
-                                  ...objTransitionBottomToTop[
-                                    stateTransitionSectionWrapper
-                                  ],
-                                }}
-                              >
-                                {titleIntroduce}
-                              </H2TitleIntroduce>
-                            </DivWrapperAnimation>
-                          );
-                        },
-                      )}
-                    </DivWrapperTitleIntroduce>
-                    <DivWrapperDescIntroduce>
-                      <PDescIntroduce
-                        style={{
-                          ...customRPTransitionDurationDefault,
-                          ...defaultTransitionBottomToTop,
-                          ...objTransitionBottomToTop[
-                            stateTransitionSectionWrapper
-                          ],
-                        }}
-                      >
-                        {objFeature?.introduce.description}
-                      </PDescIntroduce>
-                    </DivWrapperDescIntroduce>
-                  </DivWrapperIntroduce>
-                </DivContainerIntroduce>
-                <DivContainerListFeature>
-                  {objFeature?.listContent.map((objContent, idxObjContent) => {
-                    return (
-                      <CmpElFeature
-                        key={idxObjContent}
-                        objContent={objContent}
-                        posTopScroll={posTopScroll}
-                        isStartingAnimateParent={
-                          stateTransitionSectionWrapper === 'entered'
-                        }
-                        customRPTransitionDurationDefault={
-                          customRPTransitionDurationDefault
-                        }
-                      />
-                    );
-                  })}
-                </DivContainerListFeature>
-              </DivWrapperPaddedVertical>
-            </DivContainer>
-          </DivWrapper>
-        </SectionWrapper>
-      )}
-    </Transition>
+    <SectionWrapper ref={refH2TitleIntroduce}>
+      <DivWrapper>
+        <DivContainer>
+          <DivWrapperPaddedVertical>
+            <DivContainerIntroduce>
+              <DivWrapperIntroduce>
+                <DivWrapperTitleIntroduce>
+                  {objFeature?.introduce.title.map(
+                    (titleIntroduce, idxTitleIntroduce) => {
+                      return (
+                        <DivWrapperAnimation key={idxTitleIntroduce}>
+                          <Transition
+                            in={isStartableAnimatingH2TitleIntroduce}
+                            timeout={timeoutTransition}
+                          >
+                            {(stateTransitionH2TitleIntroduce) => {
+                              const durationTransition = 1000;
+                              return (
+                                <H2TitleIntroduce
+                                  ref={refH2TitleIntroduce}
+                                  style={{
+                                    ...customRPTransitionDuration(
+                                      durationTransition,
+                                    ),
+                                    ...customRPTransitionBottomToTop.default,
+                                    ...customRPTransitionBottomToTop.transition[
+                                      stateTransitionH2TitleIntroduce
+                                    ],
+                                  }}
+                                >
+                                  {titleIntroduce}
+                                </H2TitleIntroduce>
+                              );
+                            }}
+                          </Transition>
+                        </DivWrapperAnimation>
+                      );
+                    },
+                  )}
+                </DivWrapperTitleIntroduce>
+                <DivWrapperDescIntroduce>
+                  <Transition
+                    in={!!objFeature && isStartableAnimatingPDescIntroduce}
+                    timeout={timeoutTransition}
+                  >
+                    {(stateTransitionPDescIntroduce) => {
+                      const durationTransition = 1000;
+                      return (
+                        <PDescIntroduce
+                          ref={refPDescIntroduce}
+                          style={{
+                            ...customRPTransitionDuration(durationTransition),
+                            ...customRPTransitionBottomToTop.default,
+                            ...customRPTransitionBottomToTop.transition[
+                              stateTransitionPDescIntroduce
+                            ],
+                          }}
+                        >
+                          {objFeature?.introduce.description}
+                        </PDescIntroduce>
+                      );
+                    }}
+                  </Transition>
+                </DivWrapperDescIntroduce>
+              </DivWrapperIntroduce>
+            </DivContainerIntroduce>
+            <DivContainerListFeature>
+              {objFeature?.listContent.map((objContent, idxObjContent) => {
+                return (
+                  <CmpElFeature
+                    key={idxObjContent}
+                    posTopScroll={posTopScroll}
+                    objContent={objContent}
+                  />
+                );
+              })}
+            </DivContainerListFeature>
+          </DivWrapperPaddedVertical>
+        </DivContainer>
+      </DivWrapper>
+    </SectionWrapper>
   );
 };
 
