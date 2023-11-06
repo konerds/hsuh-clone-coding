@@ -12,7 +12,7 @@ import {
 import ImageBgHomeHeader from '../../../assets/image/img-bg-header-home.png';
 import ImageOverlayHighlight04 from '../../../assets/image/img-overlay-highlight-04.png';
 import ImageOverlayHighlight05 from '../../../assets/image/img-overlay-highlight-05.png';
-import ImageOverlayMac from '../../../assets/image/img-overlay-mac.png';
+import ImageIconMac from '../../../assets/image/icon/img-icon-mac.png';
 import {
   IObjHeaderHome,
   TPropsNeedPositionTopScroll,
@@ -78,7 +78,7 @@ const ImgOverlayHighlight05 = tw.img`
 absolute inset-[-18px_auto_auto_-18px]
 `;
 
-const ImgOverlayMac = tw.img`
+const ImgIconMac = tw.img`
 mr-[10px]
 `;
 
@@ -215,8 +215,8 @@ const CmpSectionHeaderHome: FC<TPropsCmpSectionHeaderHome> = ({
                             loading="lazy"
                             alt=""
                           />
-                          <ImgOverlayMac
-                            src={ImageOverlayMac}
+                          <ImgIconMac
+                            src={ImageIconMac}
                             loading="lazy"
                             alt=""
                           />
