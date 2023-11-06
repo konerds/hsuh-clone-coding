@@ -8,7 +8,7 @@ static -mt-[240px] bg-transparent max-desktop:-mt-[254px] max-mobile-landscape:-
 
 type TPropsCmpSectionCTA = TPropsNeedPositionTopScroll;
 
-const CmpSectionCTA: FC<TPropsCmpSectionCTA> = ({ posTopScroll }) => {
+const CmpSectionCTA: FC<TPropsCmpSectionCTA> = () => {
   return <SectionWrapper></SectionWrapper>;
 };
 
