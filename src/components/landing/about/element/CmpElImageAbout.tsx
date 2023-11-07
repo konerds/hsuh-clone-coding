@@ -5,10 +5,10 @@ import {
   customRPTransitionDuration,
   customRPTransitionOpacity,
   customRPTransitionBackToFront,
-  useGetIsStartableAnimating,
   preloadImageBySource,
-} from '../../../utils';
-import { TPropsNeedPositionTopScroll } from '../../../interface';
+  useGetIsStartableAnimating,
+} from '../../../../utils';
+import { IObjAbout, TPropsNeedPositionTopScroll } from '../../../../interface';
 
 const DivContainerImageAbout = tw.div`
 [grid-area:span_1_\/_span_1_\/_span_1_\/_span_1]
@@ -19,55 +19,61 @@ w-auto transition-[opacity,transform] [transform-style:preserve-3d]
 `;
 
 type TPropsCmpElImageAbout = TPropsNeedPositionTopScroll & {
-  imageContent: string;
+  objContent: Pick<IObjAbout, 'image'>;
+  isDonePreload: boolean;
+  setIsDonePreload: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const CmpElImageAbout: FC<TPropsCmpElImageAbout> = ({
   posTopScroll,
-  imageContent,
+  objContent,
+  isDonePreload,
+  setIsDonePreload,
 }) => {
   const timeoutTransition = 0;
-  const [isDonePreload, setIsDonePreload] = useState(false);
-  const refImgImageAbout = useRef<HTMLImageElement>(null);
-  const isStartableAnimatingImgImageAbout = useGetIsStartableAnimating(
+  const refDivContainerImageAbout = useRef<HTMLDivElement>(null);
+  const isStartableDivContainerImageAbout = useGetIsStartableAnimating(
     posTopScroll,
-    refImgImageAbout,
+    refDivContainerImageAbout,
+    {
+      pointDestTouching: 'top',
+      flagAdditional: isDonePreload,
+    },
   );
   useEffect(() => {
-    preloadImageBySource(imageContent).then((isDone) => {
+    preloadImageBySource(objContent.image).then((isDone) => {
       setIsDonePreload(isDone);
     });
-  }, [imageContent]);
+  }, [objContent.image, setIsDonePreload]);
   return (
-    <DivContainerImageAbout>
-      <Transition
-        in={isDonePreload && isStartableAnimatingImgImageAbout}
-        timeout={timeoutTransition}
-      >
-        {(stateTransitionImgImageAbout) => {
-          const durationTransition = 1000;
-          return (
+    <Transition
+      in={isStartableDivContainerImageAbout}
+      timeout={timeoutTransition}
+    >
+      {(stateTransitionDivContainerImageAbout) => {
+        const durationTransition = 1000;
+        return (
+          <DivContainerImageAbout ref={refDivContainerImageAbout}>
             <ImgImageAbout
-              ref={refImgImageAbout}
-              src={imageContent}
+              src={objContent.image}
               style={{
                 ...customRPTransitionDuration(durationTransition),
                 ...customRPTransitionOpacity.default,
                 ...customRPTransitionOpacity.transition[
-                  stateTransitionImgImageAbout
+                  stateTransitionDivContainerImageAbout
                 ],
                 ...customRPTransitionBackToFront.default,
                 ...customRPTransitionBackToFront.transition[
-                  stateTransitionImgImageAbout
+                  stateTransitionDivContainerImageAbout
                 ],
               }}
               loading="lazy"
               alt=""
             />
-          );
-        }}
-      </Transition>
-    </DivContainerImageAbout>
+          </DivContainerImageAbout>
+        );
+      }}
+    </Transition>
   );
 };
 

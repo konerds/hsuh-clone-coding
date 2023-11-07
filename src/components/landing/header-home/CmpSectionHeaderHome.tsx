@@ -120,6 +120,7 @@ const CmpSectionHeaderHome: FC<TPropsCmpSectionHeaderHome> = ({
     refDivHeaderHeaderHome,
     {
       pointDestTouching: 'top',
+      flagAdditional: !!objHeaderHome,
     },
   );
   useEffect(() => {
@@ -140,11 +141,7 @@ const CmpSectionHeaderHome: FC<TPropsCmpSectionHeaderHome> = ({
         <DivContainer>
           <DivWrapperPaddedVertical>
             <Transition
-              in={
-                !!objHeaderHome &&
-                isDonePreload &&
-                isStartableAnimatingDivHeaderHeaderHome
-              }
+              in={isDonePreload && isStartableAnimatingDivHeaderHeaderHome}
               timeout={timeoutTransition}
             >
               {(stateTransitionDivHeaderHome) => {

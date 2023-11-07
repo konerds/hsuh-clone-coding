@@ -49,6 +49,9 @@ const CmpElFeature: FC<TPropsCmpElFeature> = ({ posTopScroll, objContent }) => {
   const isStartableAnimatingImgIconFeature = useGetIsStartableAnimating(
     posTopScroll,
     refImgIconFeature,
+    {
+      flagAdditional: isDonePreload,
+    },
   );
   const isStartableAnimatingH3TitleFeature = useGetIsStartableAnimating(
     posTopScroll,
@@ -68,7 +71,7 @@ const CmpElFeature: FC<TPropsCmpElFeature> = ({ posTopScroll, objContent }) => {
       <DivContainer>
         <DivWrapperAnimation>
           <Transition
-            in={isDonePreload && isStartableAnimatingImgIconFeature}
+            in={isStartableAnimatingImgIconFeature}
             timeout={timeoutTransition}
           >
             {(stateTransitionImgIconFeature) => {

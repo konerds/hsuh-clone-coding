@@ -84,33 +84,26 @@ export const usePositionScrollWindow = (axis: 'x' | 'y') => {
 
 export const useGetIsStartableAnimating = <T extends HTMLElement>(
   posTopScroll: number,
-  refDivContainer: React.RefObject<T>,
+  refElement: React.RefObject<T>,
   additional?: {
-    isBidirectional?: boolean;
     pointDestTouching?: 'top' | 'bottom';
     flagAdditional?: boolean;
-    multiplier?: number;
   },
 ) => {
   const [isStartableAnimating, setIsStartableAnimating] = useState(false);
   useEffect(() => {
-    if (refDivContainer.current) {
+    if (refElement.current) {
       const flagAdditional = additional?.flagAdditional || true;
+      const rectCreatedByViewport = refElement.current.getBoundingClientRect();
       const positionTouching =
         additional?.pointDestTouching === 'top'
-          ? refDivContainer.current.getBoundingClientRect().top
-          : refDivContainer.current.getBoundingClientRect().bottom;
-      const heightInnerWindowAdjusted =
-        window.innerHeight * (additional?.multiplier || 1);
+          ? rectCreatedByViewport.top
+          : rectCreatedByViewport.bottom;
       setIsStartableAnimating(
-        flagAdditional &&
-          (additional?.isBidirectional
-            ? positionTouching >= -1.5 * heightInnerWindowAdjusted
-            : true) &&
-          positionTouching <= heightInnerWindowAdjusted,
+        flagAdditional && positionTouching <= window.innerHeight,
       );
     }
-  }, [posTopScroll, refDivContainer, additional]);
+  }, [posTopScroll, refElement, additional]);
   return isStartableAnimating;
 };
 

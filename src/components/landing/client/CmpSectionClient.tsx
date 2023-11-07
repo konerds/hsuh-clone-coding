@@ -58,7 +58,7 @@ const CmpSectionClient: FC<TPropsCmpSectionClient> = ({ posTopScroll }) => {
     posTopScroll,
     refDivContainerIntroduce,
     {
-      pointDestTouching: 'top',
+      flagAdditional: isDonePreload,
     },
   );
   useEffect(() => {
@@ -67,8 +67,8 @@ const CmpSectionClient: FC<TPropsCmpSectionClient> = ({ posTopScroll }) => {
     });
   }, []);
   useEffect(() => {
-    preloadImageBySource(objClient?.listImage).then((isDone) => {
-      setIsDonePreload(isDone);
+    preloadImageBySource(objClient?.listImage).then((listIsDone: boolean[]) => {
+      setIsDonePreload(listIsDone.every((isDone) => isDone));
     });
   }, [objClient]);
   return (
@@ -77,11 +77,7 @@ const CmpSectionClient: FC<TPropsCmpSectionClient> = ({ posTopScroll }) => {
         <DivContainer>
           <DivWrapperPaddedVertical>
             <Transition
-              in={
-                !!objClient &&
-                isDonePreload &&
-                isStartableAnimatingDivContainerIntroduce
-              }
+              in={isStartableAnimatingDivContainerIntroduce}
               timeout={timeoutTransition}
             >
               {(stateTransitionDivContainerIntroduce) => {
