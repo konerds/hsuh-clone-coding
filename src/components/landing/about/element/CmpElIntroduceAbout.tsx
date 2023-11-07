@@ -39,7 +39,7 @@ mx-0 mt-0
 `;
 
 const LinkBtnAbout = tw.a`
-inline-block cursor-pointer rounded-[32px] border-[1px] border-[color:#f4f4f429] bg-transparent px-[24px] py-[16px] text-[18px] leading-[inherit] text-[color:#f4f4f4a3] transition-[opacity,transform] [transform-style:preserve-3d] [text-decoration:none] hover:border-[color:#f4f4f4] hover:text-[color:#f4f4f4] max-desktop:mx-[24px] max-tablet:py-[12px] max-tablet:text-[16px] max-tablet:leading-[20px]
+inline-block cursor-pointer rounded-[32px] border-[1px] border-[color:#f4f4f429] bg-transparent px-[24px] py-[16px] text-[18px] leading-[inherit] text-[color:#f4f4f4a3] transition-[opacity,transform] [transform-style:preserve-3d] [text-decoration:none] hover:border-[color:#f4f4f4] hover:text-[color:#f4f4f4] max-tablet:py-[12px] max-tablet:text-[16px] max-tablet:leading-[20px]
 `;
 
 type TPropsCmpElIntroduce = TPropsNeedPositionTopScroll & {
