@@ -47,7 +47,7 @@
   html,
   body {
     font-family: Manrope, sans-serif;
-    @apply box-border select-none antialiased antialiased-stroke drag-none;
+    @apply box-border antialiased antialiased-stroke drag-none;
   }
 
   html,
@@ -86,6 +86,10 @@
 
   h3 {
     @apply mt-[20px] text-[24px] leading-[30px];
+  }
+
+  h4 {
+    @apply mt-[10px] text-[18px] leading-[24px];
   }
 
   h1,

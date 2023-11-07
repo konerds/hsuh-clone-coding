@@ -11,7 +11,7 @@ const PageLanding: FC<TPropsPageLanding> = ({ posTopScroll }) => {
     <>
       <CmpHeader posTopScroll={posTopScroll} />
       <CmpLayoutLanding posTopScroll={posTopScroll} />
-      <CmpFooter />
+      <CmpFooter posTopScroll={posTopScroll} />
     </>
   );
 };

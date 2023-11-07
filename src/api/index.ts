@@ -4,8 +4,9 @@ import {
   IObjCTA,
   IObjClient,
   IObjFeature,
+  IObjFooter,
+  IObjHeader,
   IObjHeaderHome,
-  IObjMenuHeader,
 } from '../interface';
 
 const instanceAxios: AxiosInstance = axios.create({
@@ -16,11 +17,9 @@ const instanceAxios: AxiosInstance = axios.create({
       : `${import.meta.env.VITE_URL_API_SERVER}/api`,
 });
 
-export const getListObjMenuHeader = async () => {
+export const getObjHeader = async () => {
   try {
-    const response = await instanceAxios.get<IObjMenuHeader[]>(
-      '/resource/menu-header',
-    );
+    const response = await instanceAxios.get<IObjHeader>('/resource/header');
     return response.data;
   } catch (e) {}
 };
@@ -58,6 +57,13 @@ export const getListObjAbout = async () => {
 export const getObjCTA = async () => {
   try {
     const response = await instanceAxios.get<IObjCTA>('/resource/cta');
+    return response.data;
+  } catch (e) {}
+};
+
+export const getObjFooter = async () => {
+  try {
+    const response = await instanceAxios.get<IObjFooter>('/resource/footer');
     return response.data;
   } catch (e) {}
 };

@@ -11,13 +11,17 @@ type TUrlBase = {
   iconUrl: string;
 };
 
+type TMenu = Pick<TUrlBase, 'url'> & {
+  name: string;
+};
+
 type TIntroduceBase = {
   title: string;
   description: string;
 };
 
-export interface IObjMenuHeader extends Pick<TUrlBase, 'url'> {
-  name: string;
+export interface IObjHeader extends Omit<TUrlBase, 'labelUrl'> {
+  listMenu: TMenu[];
 }
 
 export interface IObjHeaderHome {
@@ -53,6 +57,12 @@ export interface IObjAbout
 
 export interface IObjCTA extends Pick<TIntroduceBase, 'description'>, TUrlBase {
   title: string[];
+}
+
+export interface IObjFooter extends Omit<TUrlBase, 'url'> {
+  category: (Pick<TMenu, 'name'> & {
+    listMenu: TMenu[];
+  })[];
 }
 
 export type TPropsNeedPositionTopScroll = {

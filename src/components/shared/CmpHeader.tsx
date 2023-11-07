@@ -1,16 +1,16 @@
 import { FC, useState, useRef, useEffect } from 'react';
 import tw from 'tailwind-styled-components';
-import AssetImageLogo from '../../assets/image/img-logo-header.png';
 import {
   TPropsNeedPositionTopScroll,
   EViewport,
-  IObjMenuHeader,
+  IObjHeader,
 } from '../../interface';
-import { getListObjMenuHeader } from '../../api';
+import { getObjHeader } from '../../api';
 import {
   customRPTransitionBottomToTop,
   customRPTransitionDuration,
   customRPTransitionOpacity,
+  preloadImageBySource,
   queryByMaxWidth,
   useGetIsStartableAnimating,
 } from '../../utils';
@@ -82,9 +82,8 @@ const CmpHeader: FC<TPropsCmpHeader> = ({ posTopScroll }) => {
   const isWithinMobilePortrait = useMediaQuery(
     queryByMaxWidth(EViewport.MOBILE_LANDSCAPE),
   );
-  const [listObjMenuHeader, setListObjMenuHeader] = useState<IObjMenuHeader[]>(
-    [],
-  );
+  const [objHeader, setObjHeader] = useState<IObjHeader>();
+  const [isDonePreload, setIsDonePreload] = useState(false);
   const [isOpenedMenuHamburger, setIsOpenedMenuHamburger] = useState(false);
   const refDivContainerNav = useRef<HTMLDivElement>(null);
   const isStartableAnimatingDivContainerNav = useGetIsStartableAnimating(
@@ -92,22 +91,28 @@ const CmpHeader: FC<TPropsCmpHeader> = ({ posTopScroll }) => {
     refDivContainerNav,
     {
       pointDestTouching: 'top',
+      flagAdditional: isDonePreload,
     },
   );
   useEffect(() => {
-    getListObjMenuHeader().then((dataListObjMenuHeader) => {
-      if (dataListObjMenuHeader) {
-        setListObjMenuHeader(dataListObjMenuHeader);
+    getObjHeader().then((dataObjHeader) => {
+      if (dataObjHeader) {
+        setObjHeader(dataObjHeader);
       }
     });
   }, []);
+  useEffect(() => {
+    preloadImageBySource(objHeader?.iconUrl).then((isDone) => {
+      setIsDonePreload(isDone);
+    });
+  }, [objHeader]);
   return (
     <HeaderWrapper>
       <Transition
-        in={listObjMenuHeader.length > 0 && isStartableAnimatingDivContainerNav}
+        in={isStartableAnimatingDivContainerNav}
         timeout={timeoutTransition}
       >
-        {(stateTransition) => {
+        {(stateTransitionDivContainerNav) => {
           const durationTransition = 1000;
           return (
             <DivContainerNav
@@ -115,18 +120,22 @@ const CmpHeader: FC<TPropsCmpHeader> = ({ posTopScroll }) => {
               style={{
                 ...customRPTransitionDuration(durationTransition),
                 ...customRPTransitionOpacity.default,
-                ...customRPTransitionOpacity.transition[stateTransition],
+                ...customRPTransitionOpacity.transition[
+                  stateTransitionDivContainerNav
+                ],
                 ...customRPTransitionBottomToTop.default,
-                ...customRPTransitionBottomToTop.transition[stateTransition],
+                ...customRPTransitionBottomToTop.transition[
+                  stateTransitionDivContainerNav
+                ],
               }}
             >
               <DivWrapperMenuNav>
                 <LinkHome>
-                  <ImgLogo src={AssetImageLogo} loading="lazy" alt="" />
+                  <ImgLogo src={objHeader?.iconUrl} loading="eager" alt="" />
                 </LinkHome>
                 {!isWithinTablet && (
                   <NavWrapperMenuDesktop>
-                    {listObjMenuHeader.map(
+                    {objHeader?.listMenu.map(
                       (objMenuHeader, idxObjMenuHeader) => {
                         return (
                           <LinkNavDesktop
@@ -164,7 +173,7 @@ const CmpHeader: FC<TPropsCmpHeader> = ({ posTopScroll }) => {
       <AnimateHeight
         duration={500}
         height={
-          listObjMenuHeader.length > 0 &&
+          (objHeader?.listMenu || []).length > 0 &&
           isStartableAnimatingDivContainerNav &&
           isWithinTablet &&
           isOpenedMenuHamburger
@@ -175,16 +184,18 @@ const CmpHeader: FC<TPropsCmpHeader> = ({ posTopScroll }) => {
         <DivNavOverlay>
           {isWithinTablet && isOpenedMenuHamburger && (
             <NavWrapperMenuOverlay>
-              {listObjMenuHeader.map((objMenuHeader, idxObjMenuHeader) => {
-                return (
-                  <LinkNavOverlay
-                    key={idxObjMenuHeader}
-                    href={objMenuHeader.url}
-                  >
-                    {objMenuHeader.name}
-                  </LinkNavOverlay>
-                );
-              })}
+              {(objHeader?.listMenu || []).map(
+                (objMenuHeader, idxObjMenuHeader) => {
+                  return (
+                    <LinkNavOverlay
+                      key={idxObjMenuHeader}
+                      href={objMenuHeader.url}
+                    >
+                      {objMenuHeader.name}
+                    </LinkNavOverlay>
+                  );
+                },
+              )}
             </NavWrapperMenuOverlay>
           )}
         </DivNavOverlay>

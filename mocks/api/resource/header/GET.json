@@ -1,0 +1,18 @@
+{
+  "url": "/",
+  "iconUrl": "https://bucket-s3-clone-coding.s3.amazonaws.com/hush/image/img-logo-header.png",
+  "listMenu": [
+    {
+      "name": "Products",
+      "url": "https://webflow.com/Caddyflow"
+    },
+    {
+      "name": "Pricing",
+      "url": "https://webflow.com/Caddyflow"
+    },
+    {
+      "name": "Patch Release",
+      "url": "https://webflow.com/Caddyflow"
+    }
+  ]
+}
