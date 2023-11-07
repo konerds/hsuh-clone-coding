@@ -15,7 +15,7 @@ import {
 import ImgBgCTA from '../../../assets/image/img-bg-cta.png';
 
 const SectionWrapper = tw.section`
-static -mt-[240px] bg-transparent max-desktop:-mt-[254px] max-mobile-landscape:-mt-[166px]
+static -mt-[240px] bg-transparent max-desktop:-mt-[254px]
 `;
 
 const DivWrapper = tw.div`
