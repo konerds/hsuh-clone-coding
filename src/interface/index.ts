@@ -5,18 +5,26 @@ export enum EViewport {
   DESKTOP = 992,
 }
 
-export interface IObjMenuHeader {
-  name: string;
+type TUrlBase = {
   url: string;
+  labelUrl: string;
+  iconUrl: string;
+};
+
+type TIntroduceBase = {
+  title: string;
+  description: string;
+};
+
+export interface IObjMenuHeader extends Pick<TUrlBase, 'url'> {
+  name: string;
 }
 
 export interface IObjHeaderHome {
-  introduce: {
-    title: string[];
-    description: string;
-    url: string;
-    labelUrl: string;
-  };
+  introduce: TUrlBase &
+    Pick<TIntroduceBase, 'description'> & {
+      title: string[];
+    };
   imageContent: string;
 }
 
@@ -25,26 +33,26 @@ export interface IObjClient {
   listImage: string[];
 }
 
-export interface IObjContentFeature {
+export interface IObjContentFeature extends TIntroduceBase {
   icon: string;
-  title: string;
-  description: string;
 }
 
 export interface IObjFeature {
-  introduce: {
+  introduce: Pick<TIntroduceBase, 'description'> & {
     title: string[];
-    description: string;
   };
   listContent: IObjContentFeature[];
 }
 
-export interface IObjAbout {
+export interface IObjAbout
+  extends Pick<TIntroduceBase, 'description'>,
+    Omit<TUrlBase, 'iconUrl'> {
   image: string;
   title: string[];
-  description: string;
-  url: string;
-  labelUrl: string;
+}
+
+export interface IObjCTA extends Pick<TIntroduceBase, 'description'>, TUrlBase {
+  title: string[];
 }
 
 export type TPropsNeedPositionTopScroll = {

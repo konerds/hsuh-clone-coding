@@ -2,7 +2,7 @@ import { FC, useState, useRef, useEffect } from 'react';
 import tw from 'tailwind-styled-components';
 import { IObjFeature, TPropsNeedPositionTopScroll } from '../../../interface';
 import { getObjFeature } from '../../../api';
-import CmpElFeature from './CmpElFeature';
+import CmpElFeature from './element/CmpElFeature';
 import {
   customRPTransitionBottomToTop,
   customRPTransitionDuration,
@@ -35,7 +35,7 @@ mx-auto max-w-[672px] text-center
 `;
 
 const DivWrapperTitleIntroduce = tw.div`
-mx-0 mb-[2rem] mt-0
+mx-0 mb-[2rem] mt-0 max-desktop:static
 `;
 
 const DivWrapperAnimation = tw.div`

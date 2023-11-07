@@ -12,7 +12,6 @@ import {
 import ImageBgHomeHeader from '../../../assets/image/img-bg-header-home.png';
 import ImageOverlayHighlight04 from '../../../assets/image/img-overlay-highlight-04.png';
 import ImageOverlayHighlight05 from '../../../assets/image/img-overlay-highlight-05.png';
-import ImageIconMac from '../../../assets/image/icon/img-icon-mac.png';
 import {
   IObjHeaderHome,
   TPropsNeedPositionTopScroll,
@@ -66,23 +65,23 @@ const PDesc = tw.p`
 mx-auto mb-0 max-w-[476px] text-[16px] leading-[200%] text-[color:#f4f4f466] transition-transform [transform-style:preserve-3d]
 `;
 
-const DivDownloadHeaderHome = tw.div`
+const DivBtnHeaderHome = tw.div`
 mx-0 mt-0
 `;
 
-const LinkBtnDownload = tw.a`
+const LinkBtnHeaderHome = tw.a`
 relative z-[1] mx-auto flex h-[62px] w-[272px] max-w-full items-center justify-center rounded-[40px] border-[1px] border-[color:#f4f4f429] bg-[image:linear-gradient(to_right,#4c85fa,#236bfe)] px-[26px] py-[20px] transition-opacity [text-decoration:none] hover:border-[color:#f4f4f4] hover:bg-transparent hover:bg-[image:linear-gradient(transparent,transparent)]
 `;
 
-const ImgOverlayHighlight05 = tw.img`
+const ImgOverlayHighlightHeaderHome = tw.img`
 absolute inset-[-18px_auto_auto_-18px]
 `;
 
-const ImgIconMac = tw.img`
+const ImgIconLinkBtnHeaderHome = tw.img`
 mr-[10px]
 `;
 
-const DivTextDownload = tw.div`
+const DivTextLinkBtnHeaderHome = tw.div`
 text-[18px] leading-[24px] text-[color:#f5f5f5]
 `;
 
@@ -131,9 +130,18 @@ const CmpSectionHeaderHome: FC<TPropsCmpSectionHeaderHome> = ({
     });
   }, []);
   useEffect(() => {
-    preloadImageBySource(objHeaderHome?.imageContent).then((isDone) => {
-      setIsDonePreload(isDone);
-    });
+    if (!!objHeaderHome?.imageContent && !!objHeaderHome.introduce.iconUrl) {
+      preloadImageBySource([
+        objHeaderHome.imageContent,
+        objHeaderHome.introduce.iconUrl,
+      ]).then((listIsDone) => {
+        setIsDonePreload(
+          Array.isArray(listIsDone)
+            ? listIsDone.every((isDone) => isDone)
+            : false,
+        );
+      });
+    }
   }, [objHeaderHome]);
   return (
     <SectionWrapper style={customRPSectionWrapper}>
@@ -196,8 +204,8 @@ const CmpSectionHeaderHome: FC<TPropsCmpSectionHeaderHome> = ({
                           </PDesc>
                         </DivWrapperAnimation>
                       </DivDescHeaderHome>
-                      <DivDownloadHeaderHome>
-                        <LinkBtnDownload
+                      <DivBtnHeaderHome>
+                        <LinkBtnHeaderHome
                           href={objHeaderHome?.introduce.url}
                           style={{
                             ...customRPTransitionDuration(durationTransition),
@@ -207,22 +215,22 @@ const CmpSectionHeaderHome: FC<TPropsCmpSectionHeaderHome> = ({
                             ],
                           }}
                         >
-                          <ImgOverlayHighlight05
+                          <ImgOverlayHighlightHeaderHome
                             src={ImageOverlayHighlight05}
                             loading="lazy"
                             alt=""
                           />
-                          <ImgIconMac
-                            src={ImageIconMac}
+                          <ImgIconLinkBtnHeaderHome
+                            src={objHeaderHome?.introduce.iconUrl}
                             loading="lazy"
                             alt=""
                           />
-                          <DivTextDownload>
+                          <DivTextLinkBtnHeaderHome>
                             {objHeaderHome?.introduce.labelUrl}
-                          </DivTextDownload>
+                          </DivTextLinkBtnHeaderHome>
                           <DivOverlayShadow></DivOverlayShadow>
-                        </LinkBtnDownload>
-                      </DivDownloadHeaderHome>
+                        </LinkBtnHeaderHome>
+                      </DivBtnHeaderHome>
                     </DivContainerContentHeaderHome>
                     <DivContainerImageHeaderHome>
                       <Transition

@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import {
   IObjAbout,
+  IObjCTA,
   IObjClient,
   IObjFeature,
   IObjHeaderHome,
@@ -50,6 +51,13 @@ export const getObjFeature = async () => {
 export const getListObjAbout = async () => {
   try {
     const response = await instanceAxios.get<IObjAbout[]>('/resource/about');
+    return response.data;
+  } catch (e) {}
+};
+
+export const getObjCTA = async () => {
+  try {
+    const response = await instanceAxios.get<IObjCTA>('/resource/cta');
     return response.data;
   } catch (e) {}
 };

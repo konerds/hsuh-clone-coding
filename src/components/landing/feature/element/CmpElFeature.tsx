@@ -3,13 +3,13 @@ import tw from 'tailwind-styled-components';
 import {
   IObjContentFeature,
   TPropsNeedPositionTopScroll,
-} from '../../../interface';
+} from '../../../../interface';
 import {
   customRPTransitionBottomToTop,
   customRPTransitionDuration,
   preloadImageBySource,
   useGetIsStartableAnimating,
-} from '../../../utils';
+} from '../../../../utils';
 import { Transition } from 'react-transition-group';
 
 const DivWrapper = tw.div`

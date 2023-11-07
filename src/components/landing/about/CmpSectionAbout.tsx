@@ -5,7 +5,7 @@ import { getListObjAbout } from '../../../api';
 import CmpLayoutElAbout from './element/CmpLayoutElAbout';
 
 const SectionWrapper = tw.section`
-mt-0 h-[1872px] bg-[#111212] max-desktop:h-[2690px] max-tablet:h-[2240px] max-mobile-landscape:h-[2320px]
+mt-0 min-h-[1872px] bg-[#111212] max-desktop:min-h-[2690px] max-tablet:min-h-[2240px] max-mobile-landscape:min-h-[2320px]
 `;
 
 const DivWrapper = tw.div`

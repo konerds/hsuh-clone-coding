@@ -3,6 +3,7 @@
     "title": ["Connect with ", "your team"],
     "description": "Hush is a messaging app for your team that will helps you to connect with everyone in a easy and comfortable way posssible",
     "url": "https://webflow.com/Caddyflow",
+    "iconUrl": "https://bucket-s3-clone-coding.s3.amazonaws.com/hush/image/icon/img-icon-mac.png",
     "labelUrl": "Download for MacOS"
   },
   "imageContent": "https://bucket-s3-clone-coding.s3.amazonaws.com/hush/image/img-dashboard-header-home.png"

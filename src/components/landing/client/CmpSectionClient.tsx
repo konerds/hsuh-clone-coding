@@ -67,8 +67,12 @@ const CmpSectionClient: FC<TPropsCmpSectionClient> = ({ posTopScroll }) => {
     });
   }, []);
   useEffect(() => {
-    preloadImageBySource(objClient?.listImage).then((listIsDone: boolean[]) => {
-      setIsDonePreload(listIsDone.every((isDone) => isDone));
+    preloadImageBySource(objClient?.listImage).then((listIsDone) => {
+      setIsDonePreload(
+        Array.isArray(listIsDone)
+          ? listIsDone.every((isDone) => isDone)
+          : false,
+      );
     });
   }, [objClient]);
   return (
