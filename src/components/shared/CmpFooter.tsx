@@ -39,8 +39,8 @@ type TPropsDivContainerItemContentFooter = {
   $isLeftSection?: boolean;
 };
 const DivContainerItemContentFooter = tw.div<TPropsDivContainerItemContentFooter>`
-[grid-area:span_1_\/_span_1_\/_span_1_\/_span_1] max-tablet:place-self-center
-${(p) => (p.$isLeftSection ? 'max-tablet:text-center' : '')}
+[grid-area:span_1_\/_span_1_\/_span_1_\/_span_1] max-tablet:text-center
+${(p) => (p.$isLeftSection ? 'max-tablet:place-self-center' : '')}
 `;
 
 const DivWrapperLogo = tw.div`
