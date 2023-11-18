@@ -1,4 +1,4 @@
-# Pratice Frontend Publishing with Hush Webflow Example
+# Practice Frontend Publishing with Hush Webflow Example
 
 <p>
 Hush Landing Page<br/>
