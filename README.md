@@ -22,15 +22,6 @@ Hush Landing Page<br/>
 
 > In production, you can set below environment variables
 
-| Variable Name       | Description                                                                                       |
-| ------------------- | ------------------------------------------------------------------------------------------------- |
-| VITE_IS_USE_PROXY   | If set "true" in production environment, requests to "api" will be matched to VITE_URL_API_SERVER |
-| VITE_URL_API_SERVER | API Server URL of Backend Web Service in production environment                                   |
-
-### Command
-
-| Command Name    | Description                                                                                                       |
-| --------------- | ----------------------------------------------------------------------------------------------------------------- |
-| npm run dev     | You can start app in development environment with custom express server                                           |
-| npm run build   | You can build app to bundle of static files.                                                                      |
-| npm run preview | You can start app of bundle of static files in production environment.<br />(But, It's not real production world) |
+| Variable Name       | Description                                                     |
+| ------------------- | --------------------------------------------------------------- |
+| VITE_URL_API_SERVER | API Server URL of Backend API Service in production environment |
