@@ -2,7 +2,7 @@ name: ghpages
 
 on:
   push:
-    branches: ['master']
+    branches: ['deploy']
 
 permissions:
   contents: read
@@ -23,20 +23,19 @@ jobs:
       - name: Use source code in repository
         uses: actions/checkout@v3
 
-      - name: Use node 18 runtime.
+      - name: Use node 22 runtime
         uses: actions/setup-node@v3
         with:
-          node-version: 18
-          cache: 'npm'
+          node-version: 22
+          cache: 'yarn'
 
       - name: Install dependency
-        run: npm install
+        run: yarn install
 
       - name: Build
-        run: npm run build
+        run: yarn build
         env:
           CI: false
-          VITE_IS_USE_PROXY: ${{ vars.VITE_IS_USE_PROXY }}
           VITE_URL_API_SERVER: ${{ vars.VITE_URL_API_SERVER }}
 
       - name: Setup Pages
