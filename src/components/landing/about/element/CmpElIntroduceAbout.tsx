@@ -1,14 +1,16 @@
-import { FC, useRef } from 'react';
-import tw from 'tailwind-styled-components';
+import { memo, useRef } from 'react';
+
+import { tw } from '../../../../utils';
 import {
   customRPTransitionBottomToTop,
   customRPTransitionDuration,
   customRPTransitionOpacity,
   customRPTransitionBackToFront,
   useGetIsStartableAnimating,
+  usePositionScrollWindow,
 } from '../../../../utils';
 import { Transition } from 'react-transition-group';
-import { IObjAbout, TPropsNeedPositionTopScroll } from '../../../../interface';
+import { IObjAbout } from '../../../../interface';
 
 type TPropsDivContainerIntroduceAbout = {
   $isIdxEven: boolean;
@@ -39,21 +41,21 @@ mx-0 mt-0
 `;
 
 const LinkBtnAbout = tw.a`
-inline-block cursor-pointer rounded-[32px] border-[1px] border-[color:#f4f4f429] bg-transparent px-[24px] py-[16px] text-[18px] leading-[inherit] text-[color:#f4f4f4a3] transition-[opacity,transform] [transform-style:preserve-3d] [text-decoration:none] hover:border-[color:#f4f4f4] hover:text-[color:#f4f4f4] max-tablet:py-[12px] max-tablet:text-[16px] max-tablet:leading-[20px]
+inline-block cursor-pointer rounded-[32px] border-[1px] border-[color:#f4f4f429] bg-transparent px-[24px] py-[16px] text-[18px] leading-[inherit] text-[color:#f4f4f4a3] transition-[opacity,transform] [text-decoration:none] [transform-style:preserve-3d] hover:border-[color:#f4f4f4] hover:text-[color:#f4f4f4] max-tablet:py-[12px] max-tablet:text-[16px] max-tablet:leading-[20px]
 `;
 
-type TPropsCmpElIntroduce = TPropsNeedPositionTopScroll & {
+type TPropsCmpElIntroduce = {
   objContent: Omit<IObjAbout, 'image'>;
   isIdxEven: boolean;
   isDonePreload: boolean;
 };
 
-const CmpElIntroduceAbout: FC<TPropsCmpElIntroduce> = ({
-  posTopScroll,
+const CmpElIntroduceAbout = ({
   objContent,
   isIdxEven,
   isDonePreload,
-}) => {
+}: TPropsCmpElIntroduce) => {
+  const posTopScroll = usePositionScrollWindow();
   const timeoutTransition = 0;
   const timeoutTransitionDivContainerBtnAbout = 300;
   const refDivContainerIntroduceAbout = useRef<HTMLDivElement>(null);
@@ -157,4 +159,4 @@ const CmpElIntroduceAbout: FC<TPropsCmpElIntroduce> = ({
   );
 };
 
-export default CmpElIntroduceAbout;
+export default memo(CmpElIntroduceAbout);

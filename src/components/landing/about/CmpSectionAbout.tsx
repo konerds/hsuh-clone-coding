@@ -1,6 +1,7 @@
-import { FC, useState, useEffect } from 'react';
-import tw from 'tailwind-styled-components';
-import { IObjAbout, TPropsNeedPositionTopScroll } from '../../../interface';
+import { memo, useState, useLayoutEffect } from 'react';
+
+import { tw } from '../../../utils';
+import { IObjAbout } from '../../../interface';
 import { getListObjAbout } from '../../../api';
 import CmpLayoutElAbout from './element/CmpLayoutElAbout';
 
@@ -20,11 +21,9 @@ const DivWrapperPaddedVertical = tw.div`
 px-0
 `;
 
-type TPropsCmpSectionAbout = TPropsNeedPositionTopScroll;
-
-const CmpSectionAbout: FC<TPropsCmpSectionAbout> = ({ posTopScroll }) => {
+const CmpSectionAbout = () => {
   const [listObjAbout, setListObjAbout] = useState<IObjAbout[]>([]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     getListObjAbout().then((dataListObjAbout) => {
       if (dataListObjAbout) {
         setListObjAbout(dataListObjAbout);
@@ -41,7 +40,6 @@ const CmpSectionAbout: FC<TPropsCmpSectionAbout> = ({ posTopScroll }) => {
                 return (
                   <CmpLayoutElAbout
                     key={idxObjAbout}
-                    posTopScroll={posTopScroll}
                     isIdxEven={idxObjAbout % 2 === 0}
                     objAbout={objAbout}
                   />
@@ -55,4 +53,4 @@ const CmpSectionAbout: FC<TPropsCmpSectionAbout> = ({ posTopScroll }) => {
   );
 };
 
-export default CmpSectionAbout;
+export default memo(CmpSectionAbout);

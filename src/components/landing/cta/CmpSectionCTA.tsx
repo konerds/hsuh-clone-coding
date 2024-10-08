@@ -1,7 +1,8 @@
-import { FC, useState, useEffect, useRef } from 'react';
-import tw from 'tailwind-styled-components';
+import { memo, useState, useRef, useLayoutEffect } from 'react';
+
+import { tw } from '../../../utils';
 import { Transition } from 'react-transition-group';
-import { IObjCTA, TPropsNeedPositionTopScroll } from '../../../interface';
+import { IObjCTA } from '../../../interface';
 import { getObjCTA } from '../../../api';
 import {
   customRP,
@@ -11,6 +12,7 @@ import {
   customRPTransitionOpacity,
   preloadImageBySource,
   useGetIsStartableAnimating,
+  usePositionScrollWindow,
 } from '../../../utils';
 import ImgBgCTA from '../../../assets/image/img-bg-cta.png';
 
@@ -62,7 +64,7 @@ mb-0 leading-[200%] text-[color:#f4f4f466] transition-transform [transform-style
 `;
 
 const LinkBtnContentCTA = tw.a`
-relative z-[1] mx-auto flex h-[62px] w-[272px] max-w-full items-center justify-center rounded-[40px] border-[1px] border-[color:#f4f4f429] bg-[color:#f4f4f4] px-[26px] py-[20px] transition-[opacity,transfrom] [transform-style:preserve-3d] [text-decoration:none] hover:border-[color:#1e1e20]
+relative z-[1] mx-auto flex h-[62px] w-[272px] max-w-full items-center justify-center rounded-[40px] border-[1px] border-[color:#f4f4f429] bg-[color:#f4f4f4] px-[26px] py-[20px] transition-[opacity,transfrom] [text-decoration:none] [transform-style:preserve-3d] hover:border-[color:#1e1e20]
 `;
 
 const ImgIconLinkBtnContentCTA = tw.img`
@@ -73,9 +75,8 @@ const DivTextLinkBtnContentCTA = tw.div`
 text-[18px] leading-[24px] text-[color:#1e1e20]
 `;
 
-type TPropsCmpSectionCTA = TPropsNeedPositionTopScroll;
-
-const CmpSectionCTA: FC<TPropsCmpSectionCTA> = ({ posTopScroll }) => {
+const CmpSectionCTA = () => {
+  const posTopScroll = usePositionScrollWindow();
   const timeoutTransition = 0;
   const timeoutTransitionDivContainerBtnCTA = 300;
   const [objCTA, setObjCTA] = useState<IObjCTA>();
@@ -97,18 +98,16 @@ const CmpSectionCTA: FC<TPropsCmpSectionCTA> = ({ posTopScroll }) => {
       flagAdditional: isDonePreload,
     },
   );
-  useEffect(() => {
+  useLayoutEffect(() => {
     getObjCTA().then((dataObjCTA) => {
       if (dataObjCTA) {
         setObjCTA(dataObjCTA);
+        preloadImageBySource(dataObjCTA.iconUrl).then((isDone) => {
+          setIsDonePreload(isDone);
+        });
       }
     });
   }, []);
-  useEffect(() => {
-    preloadImageBySource(objCTA?.iconUrl).then((isDone) => {
-      setIsDonePreload(isDone);
-    });
-  }, [objCTA]);
   return (
     <SectionWrapper>
       <DivWrapper>
@@ -188,7 +187,6 @@ const CmpSectionCTA: FC<TPropsCmpSectionCTA> = ({ posTopScroll }) => {
                               >
                                 <ImgIconLinkBtnContentCTA
                                   src={objCTA?.iconUrl}
-                                  loading="lazy"
                                   alt=""
                                 />
                                 <DivTextLinkBtnContentCTA>
@@ -211,4 +209,4 @@ const CmpSectionCTA: FC<TPropsCmpSectionCTA> = ({ posTopScroll }) => {
   );
 };
 
-export default CmpSectionCTA;
+export default memo(CmpSectionCTA);

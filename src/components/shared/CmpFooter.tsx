@@ -1,6 +1,7 @@
-import { FC, useState, useRef, useEffect } from 'react';
-import tw from 'tailwind-styled-components';
-import { IObjFooter, TPropsNeedPositionTopScroll } from '../../interface';
+import { memo, useState, useRef, useLayoutEffect } from 'react';
+
+import { tw } from '../../utils';
+import { IObjFooter } from '../../interface';
 import { getObjFooter } from '../../api';
 import { Transition } from 'react-transition-group';
 import {
@@ -9,6 +10,7 @@ import {
   customRPTransitionOpacity,
   preloadImageBySource,
   useGetIsStartableAnimating,
+  usePositionScrollWindow,
 } from '../../utils';
 
 const FooterWrapper = tw.footer`
@@ -91,9 +93,8 @@ const LinkPrivacyPolicy = tw.a`
 font-medium text-[color:#1e1e203d] [text-decoration:none] hover:text-[color:#1e1e2099]
 `;
 
-type TPropsCmpFooter = TPropsNeedPositionTopScroll;
-
-const CmpFooter: FC<TPropsCmpFooter> = ({ posTopScroll }) => {
+const CmpFooter = () => {
+  const posTopScroll = usePositionScrollWindow();
   const timeoutTransition = 0;
   const [objFooter, setObjFooter] = useState<IObjFooter>();
   const [isDonePreload, setIsDonePreload] = useState(false);
@@ -106,18 +107,16 @@ const CmpFooter: FC<TPropsCmpFooter> = ({ posTopScroll }) => {
       flagAdditional: isDonePreload,
     },
   );
-  useEffect(() => {
+  useLayoutEffect(() => {
     getObjFooter().then((dataObjFooter) => {
       if (dataObjFooter) {
         setObjFooter(dataObjFooter);
+        preloadImageBySource(dataObjFooter.iconUrl).then((isDone) => {
+          setIsDonePreload(isDone);
+        });
       }
     });
   }, []);
-  useEffect(() => {
-    preloadImageBySource(objFooter?.iconUrl).then((isDone) => {
-      setIsDonePreload(isDone);
-    });
-  }, [objFooter]);
   return (
     <FooterWrapper>
       <DivWrapper>
@@ -146,7 +145,7 @@ const CmpFooter: FC<TPropsCmpFooter> = ({ posTopScroll }) => {
                     <DivLayoutGridContentFooter>
                       <DivContainerItemContentFooter $isLeftSection={true}>
                         <DivWrapperLogo>
-                          <img src={objFooter?.iconUrl} loading="lazy" alt="" />
+                          <img src={objFooter?.iconUrl} alt="" />
                         </DivWrapperLogo>
                         <DivWrapperSlogan>
                           <DivSlogan>{objFooter?.labelUrl}</DivSlogan>
@@ -217,4 +216,4 @@ const CmpFooter: FC<TPropsCmpFooter> = ({ posTopScroll }) => {
   );
 };
 
-export default CmpFooter;
+export default memo(CmpFooter);

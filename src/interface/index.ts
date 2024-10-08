@@ -64,7 +64,3 @@ export interface IObjFooter extends Omit<TUrlBase, 'url'> {
     listMenu: TMenu[];
   })[];
 }
-
-export type TPropsNeedPositionTopScroll = {
-  posTopScroll: number;
-};

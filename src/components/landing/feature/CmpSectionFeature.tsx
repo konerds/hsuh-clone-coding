@@ -1,12 +1,14 @@
-import { FC, useState, useRef, useEffect } from 'react';
-import tw from 'tailwind-styled-components';
-import { IObjFeature, TPropsNeedPositionTopScroll } from '../../../interface';
+import { memo, useState, useRef, useLayoutEffect } from 'react';
+
+import { tw } from '../../../utils';
+import { IObjFeature } from '../../../interface';
 import { getObjFeature } from '../../../api';
 import CmpElFeature from './element/CmpElFeature';
 import {
   customRPTransitionBottomToTop,
   customRPTransitionDuration,
   useGetIsStartableAnimating,
+  usePositionScrollWindow,
 } from '../../../utils';
 import { Transition } from 'react-transition-group';
 
@@ -58,9 +60,8 @@ const DivContainerListFeature = tw.div`
 grid gap-[4rem] [grid-auto-columns:1fr] [grid-template-columns:1fr_1fr_1fr] [grid-template-rows:auto] max-desktop:[grid-template-columns:1fr]
 `;
 
-type TPropsCmpSectionFeature = TPropsNeedPositionTopScroll;
-
-const CmpSectionFeature: FC<TPropsCmpSectionFeature> = ({ posTopScroll }) => {
+const CmpSectionFeature = () => {
+  const posTopScroll = usePositionScrollWindow();
   const timeoutTransition = 0;
   const [objFeature, setObjFeature] = useState<IObjFeature>();
   const refH2TitleIntroduce = useRef<HTMLHeadingElement>(null);
@@ -79,7 +80,7 @@ const CmpSectionFeature: FC<TPropsCmpSectionFeature> = ({ posTopScroll }) => {
       pointDestTouching: 'top',
     },
   );
-  useEffect(() => {
+  useLayoutEffect(() => {
     getObjFeature().then((dataObjFeature) => {
       setObjFeature(dataObjFeature);
     });
@@ -154,11 +155,7 @@ const CmpSectionFeature: FC<TPropsCmpSectionFeature> = ({ posTopScroll }) => {
             <DivContainerListFeature>
               {objFeature?.listContent.map((objContent, idxObjContent) => {
                 return (
-                  <CmpElFeature
-                    key={idxObjContent}
-                    posTopScroll={posTopScroll}
-                    objContent={objContent}
-                  />
+                  <CmpElFeature key={idxObjContent} objContent={objContent} />
                 );
               })}
             </DivContainerListFeature>
@@ -169,4 +166,4 @@ const CmpSectionFeature: FC<TPropsCmpSectionFeature> = ({ posTopScroll }) => {
   );
 };
 
-export default CmpSectionFeature;
+export default memo(CmpSectionFeature);
