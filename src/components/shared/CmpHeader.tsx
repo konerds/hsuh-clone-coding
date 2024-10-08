@@ -1,10 +1,7 @@
-import { FC, useState, useRef, useEffect } from 'react';
-import tw from 'tailwind-styled-components';
-import {
-  TPropsNeedPositionTopScroll,
-  EViewport,
-  IObjHeader,
-} from '../../interface';
+import { memo, useState, useRef, useLayoutEffect } from 'react';
+
+import { tw } from '../../utils';
+import { EViewport, IObjHeader } from '../../interface';
 import { getObjHeader } from '../../api';
 import {
   customRPTransitionBottomToTop,
@@ -13,6 +10,7 @@ import {
   preloadImageBySource,
   queryByMaxWidth,
   useGetIsStartableAnimating,
+  usePositionScrollWindow,
 } from '../../utils';
 import { useMediaQuery } from 'react-responsive';
 import AnimateHeight from 'react-animate-height';
@@ -35,7 +33,7 @@ relative float-left text-[color:#333333] [text-decoration:none] max-tablet:pl-[1
 `;
 
 const ImgLogo = tw.img`
-h-auto w-auto
+h-auto w-[90px]
 `;
 
 const NavWrapperMenuDesktop = tw.nav`
@@ -74,9 +72,8 @@ const LinkNavOverlay = tw.a`
 relative mx-auto block p-[20px] text-left text-[18px] font-medium leading-[27px] text-[color:#1e1e20a3] transition-[color] duration-200 ease-[ease] [text-decoration:none] hover:text-[color:#1e1e20]
 `;
 
-type TPropsCmpHeader = TPropsNeedPositionTopScroll;
-
-const CmpHeader: FC<TPropsCmpHeader> = ({ posTopScroll }) => {
+export const CmpHeader = () => {
+  const posTopScroll = usePositionScrollWindow();
   const timeoutTransition = 0;
   const isWithinTablet = useMediaQuery(queryByMaxWidth(EViewport.DESKTOP));
   const isWithinMobilePortrait = useMediaQuery(
@@ -94,18 +91,16 @@ const CmpHeader: FC<TPropsCmpHeader> = ({ posTopScroll }) => {
       flagAdditional: isDonePreload,
     },
   );
-  useEffect(() => {
+  useLayoutEffect(() => {
     getObjHeader().then((dataObjHeader) => {
       if (dataObjHeader) {
         setObjHeader(dataObjHeader);
+        preloadImageBySource(dataObjHeader.iconUrl).then((isDone) => {
+          setIsDonePreload(isDone);
+        });
       }
     });
   }, []);
-  useEffect(() => {
-    preloadImageBySource(objHeader?.iconUrl).then((isDone) => {
-      setIsDonePreload(isDone);
-    });
-  }, [objHeader]);
   return (
     <HeaderWrapper>
       <Transition
@@ -131,7 +126,7 @@ const CmpHeader: FC<TPropsCmpHeader> = ({ posTopScroll }) => {
             >
               <DivWrapperMenuNav>
                 <LinkHome>
-                  <ImgLogo src={objHeader?.iconUrl} loading="eager" alt="" />
+                  <ImgLogo src={objHeader?.iconUrl} alt="" />
                 </LinkHome>
                 {!isWithinTablet && (
                   <NavWrapperMenuDesktop>
@@ -173,7 +168,7 @@ const CmpHeader: FC<TPropsCmpHeader> = ({ posTopScroll }) => {
       <AnimateHeight
         duration={500}
         height={
-          (objHeader?.listMenu || []).length > 0 &&
+          objHeader?.listMenu &&
           isStartableAnimatingDivContainerNav &&
           isWithinTablet &&
           isOpenedMenuHamburger
@@ -184,18 +179,16 @@ const CmpHeader: FC<TPropsCmpHeader> = ({ posTopScroll }) => {
         <DivNavOverlay>
           {isWithinTablet && isOpenedMenuHamburger && (
             <NavWrapperMenuOverlay>
-              {(objHeader?.listMenu || []).map(
-                (objMenuHeader, idxObjMenuHeader) => {
-                  return (
-                    <LinkNavOverlay
-                      key={idxObjMenuHeader}
-                      href={objMenuHeader.url}
-                    >
-                      {objMenuHeader.name}
-                    </LinkNavOverlay>
-                  );
-                },
-              )}
+              {objHeader?.listMenu.map((objMenuHeader, idxObjMenuHeader) => {
+                return (
+                  <LinkNavOverlay
+                    key={idxObjMenuHeader}
+                    href={objMenuHeader.url}
+                  >
+                    {objMenuHeader.name}
+                  </LinkNavOverlay>
+                );
+              })}
             </NavWrapperMenuOverlay>
           )}
         </DivNavOverlay>
@@ -204,4 +197,4 @@ const CmpHeader: FC<TPropsCmpHeader> = ({ posTopScroll }) => {
   );
 };
 
-export default CmpHeader;
+export default memo(CmpHeader);

@@ -1,14 +1,13 @@
-import { FC, useState, useRef, useEffect } from 'react';
-import tw from 'tailwind-styled-components';
-import {
-  IObjContentFeature,
-  TPropsNeedPositionTopScroll,
-} from '../../../../interface';
+import { memo, useState, useRef, useLayoutEffect } from 'react';
+
+import { tw } from '../../../../utils';
+import { IObjContentFeature } from '../../../../interface';
 import {
   customRPTransitionBottomToTop,
   customRPTransitionDuration,
   preloadImageBySource,
   useGetIsStartableAnimating,
+  usePositionScrollWindow,
 } from '../../../../utils';
 import { Transition } from 'react-transition-group';
 
@@ -36,11 +35,12 @@ const PDescFeature = tw.p`
 mb-0 leading-[200%] text-[color:#1e1e2052] transition-transform [transform-style:preserve-3d]
 `;
 
-type TPropsCmpElFeature = TPropsNeedPositionTopScroll & {
+type TPropsCmpElFeature = {
   objContent: IObjContentFeature;
 };
 
-const CmpElFeature: FC<TPropsCmpElFeature> = ({ posTopScroll, objContent }) => {
+const CmpElFeature = ({ objContent }: TPropsCmpElFeature) => {
+  const posTopScroll = usePositionScrollWindow();
   const timeoutTransition = 0;
   const [isDonePreload, setIsDonePreload] = useState(false);
   const refImgIconFeature = useRef<HTMLImageElement>(null);
@@ -61,7 +61,7 @@ const CmpElFeature: FC<TPropsCmpElFeature> = ({ posTopScroll, objContent }) => {
     posTopScroll,
     refPDescFeature,
   );
-  useEffect(() => {
+  useLayoutEffect(() => {
     preloadImageBySource(objContent.icon).then((isDone) => {
       setIsDonePreload(isDone);
     });
@@ -87,7 +87,6 @@ const CmpElFeature: FC<TPropsCmpElFeature> = ({ posTopScroll, objContent }) => {
                       stateTransitionImgIconFeature
                     ],
                   }}
-                  loading="lazy"
                   alt=""
                 />
               );
@@ -151,4 +150,4 @@ const CmpElFeature: FC<TPropsCmpElFeature> = ({ posTopScroll, objContent }) => {
   );
 };
 
-export default CmpElFeature;
+export default memo(CmpElFeature);

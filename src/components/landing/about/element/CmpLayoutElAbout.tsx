@@ -1,6 +1,7 @@
-import { FC, useState } from 'react';
-import tw from 'tailwind-styled-components';
-import { IObjAbout, TPropsNeedPositionTopScroll } from '../../../../interface';
+import { memo, useState } from 'react';
+
+import { tw } from '../../../../utils';
+import { IObjAbout } from '../../../../interface';
 import CmpElImageAbout from './CmpElImageAbout';
 import CmpElIntroduceAbout from './CmpElIntroduceAbout';
 
@@ -15,16 +16,12 @@ ${(p) =>
     : '[grid-template-columns:1.25fr_1.75fr] max-desktop:[grid-template-columns:1.75fr]'}
 `;
 
-type TPropsCmpLayoutElAbout = TPropsNeedPositionTopScroll & {
+type TPropsCmpLayoutElAbout = {
   isIdxEven: boolean;
   objAbout: IObjAbout;
 };
 
-const CmpLayoutElAbout: FC<TPropsCmpLayoutElAbout> = ({
-  posTopScroll,
-  isIdxEven,
-  objAbout,
-}) => {
+const CmpLayoutElAbout = ({ isIdxEven, objAbout }: TPropsCmpLayoutElAbout) => {
   const [isDonePreload, setIsDonePreload] = useState(false);
   return (
     <>
@@ -33,13 +30,11 @@ const CmpLayoutElAbout: FC<TPropsCmpLayoutElAbout> = ({
           {isIdxEven ? (
             <>
               <CmpElImageAbout
-                posTopScroll={posTopScroll}
                 objContent={{ ...objAbout }}
                 isDonePreload={isDonePreload}
                 setIsDonePreload={setIsDonePreload}
               />
               <CmpElIntroduceAbout
-                posTopScroll={posTopScroll}
                 objContent={{
                   ...objAbout,
                 }}
@@ -50,7 +45,6 @@ const CmpLayoutElAbout: FC<TPropsCmpLayoutElAbout> = ({
           ) : (
             <>
               <CmpElIntroduceAbout
-                posTopScroll={posTopScroll}
                 objContent={{
                   ...objAbout,
                 }}
@@ -58,7 +52,6 @@ const CmpLayoutElAbout: FC<TPropsCmpLayoutElAbout> = ({
                 isDonePreload={isDonePreload}
               />
               <CmpElImageAbout
-                posTopScroll={posTopScroll}
                 objContent={{ ...objAbout }}
                 isDonePreload={isDonePreload}
                 setIsDonePreload={setIsDonePreload}
@@ -71,4 +64,4 @@ const CmpLayoutElAbout: FC<TPropsCmpLayoutElAbout> = ({
   );
 };
 
-export default CmpLayoutElAbout;
+export default memo(CmpLayoutElAbout);

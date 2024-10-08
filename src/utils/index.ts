@@ -1,5 +1,34 @@
-import { useState, useEffect } from 'react';
+import { memo, useState, useEffect, useContext, createContext } from 'react';
+
+import _tw from 'tailwind-styled-components';
 import { EViewport } from '../interface';
+
+export const tw = {
+  div: <T extends object>(...args: Parameters<typeof _tw.div<T>>) =>
+    memo(_tw.div<T>(...args)),
+  header: <T extends object>(...args: Parameters<typeof _tw.header<T>>) =>
+    memo(_tw.header<T>(...args)),
+  a: <T extends object>(...args: Parameters<typeof _tw.a<T>>) =>
+    memo(_tw.a<T>(...args)),
+  img: <T extends object>(...args: Parameters<typeof _tw.img<T>>) =>
+    memo(_tw.img<T>(...args)),
+  nav: <T extends object>(...args: Parameters<typeof _tw.nav<T>>) =>
+    memo(_tw.nav<T>(...args)),
+  section: <T extends object>(...args: Parameters<typeof _tw.section<T>>) =>
+    memo(_tw.section<T>(...args)),
+  footer: <T extends object>(...args: Parameters<typeof _tw.footer<T>>) =>
+    memo(_tw.footer<T>(...args)),
+  p: <T extends object>(...args: Parameters<typeof _tw.p<T>>) =>
+    memo(_tw.p<T>(...args)),
+  h1: <T extends object>(...args: Parameters<typeof _tw.h1<T>>) =>
+    memo(_tw.h1<T>(...args)),
+  h2: <T extends object>(...args: Parameters<typeof _tw.h2<T>>) =>
+    memo(_tw.h2<T>(...args)),
+  h3: <T extends object>(...args: Parameters<typeof _tw.h3<T>>) =>
+    memo(_tw.h3<T>(...args)),
+  h4: <T extends object>(...args: Parameters<typeof _tw.h4<T>>) =>
+    memo(_tw.h4<T>(...args)),
+};
 
 export const customRP = (obj: React.CSSProperties) => obj;
 
@@ -69,19 +98,6 @@ export const customRPTransitionBackToFront = {
   },
 };
 
-export const usePositionScrollWindow = (axis: 'x' | 'y') => {
-  const [positionScroll, setPositionScroll] = useState(0);
-  useEffect(() => {
-    const updatePosition = () => {
-      setPositionScroll(axis === 'y' ? window.scrollY : window.scrollX);
-    };
-    window.addEventListener('scroll', updatePosition);
-    updatePosition();
-    return () => window.removeEventListener('scroll', updatePosition);
-  }, [axis]);
-  return positionScroll;
-};
-
 export const useGetIsStartableAnimating = <T extends HTMLElement>(
   posTopScroll: number,
   refElement: React.RefObject<T>,
@@ -133,3 +149,9 @@ export const preloadImageBySource: (
     });
   }
 };
+
+export const VerticalScrollPositionContext = createContext(0);
+
+export function usePositionScrollWindow() {
+  return useContext(VerticalScrollPositionContext);
+}
