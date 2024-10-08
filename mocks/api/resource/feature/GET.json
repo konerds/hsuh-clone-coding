@@ -1,0 +1,23 @@
+{
+  "introduce": {
+    "title": ["Some of our features ", "that will help you"],
+    "description": "With cube, you can build your app or website faster than before. Featured with an awesome things inside that will help you in your design process"
+  },
+  "listContent": [
+    {
+      "icon": "https://bucket-s3-clone-coding.s3.amazonaws.com/hush/image/icon/img-icon-feature-1.png",
+      "title": "Easy Communication",
+      "description": "Easy and simple way to communicate with your team and friends, build with awesome features with it"
+    },
+    {
+      "icon": "https://bucket-s3-clone-coding.s3.amazonaws.com/hush/image/icon/img-icon-feature-2.png",
+      "title": "Community Support",
+      "description": "A creative and quick way to get feedbacks and support in your team or community, just send the work and the rest will follow"
+    },
+    {
+      "icon": "https://bucket-s3-clone-coding.s3.amazonaws.com/hush/image/icon/img-icon-feature-3.png",
+      "title": "Discover Channel",
+      "description": "Discover new channels you interest in, meet with new people around the world and make more connections"
+    }
+  ]
+}

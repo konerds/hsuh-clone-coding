@@ -1,0 +1,16 @@
+[
+  {
+    "image": "https://bucket-s3-clone-coding.s3.amazonaws.com/hush/image/img-content-about-1.png",
+    "title": ["Easy and ", "effortless way ", "to connect with ", "your team"],
+    "description": "With hush you can easliy connect with your team in a different fields, you can create, manage, and edit what ever you want inside the channel. Create as many as you want",
+    "url": "https://webflow.com/Caddyflow",
+    "labelUrl": "Learn more about Hush"
+  },
+  {
+    "image": "https://bucket-s3-clone-coding.s3.amazonaws.com/hush/image/img-content-about-2.png",
+    "title": ["Tons of ", "supportive", "community you ", "can discover"],
+    "description": "Search any type and field of community you want, by searching on the search page you can discover tons of supportive community that will help you with your work.",
+    "url": "https://webflow.com/Caddyflow",
+    "labelUrl": "Explore the communities"
+  }
+]
