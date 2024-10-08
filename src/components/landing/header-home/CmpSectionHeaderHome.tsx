@@ -1,5 +1,6 @@
-import { FC, useState, useRef, useEffect } from 'react';
-import tw from 'tailwind-styled-components';
+import { memo, useState, useRef, useLayoutEffect } from 'react';
+
+import { tw } from '../../../utils';
 import { Transition } from 'react-transition-group';
 import {
   customRP,
@@ -8,14 +9,12 @@ import {
   customRPTransitionOpacity,
   preloadImageBySource,
   useGetIsStartableAnimating,
+  usePositionScrollWindow,
 } from '../../../utils';
 import ImageBgHomeHeader from '../../../assets/image/img-bg-header-home.png';
 import ImageOverlayHighlight04 from '../../../assets/image/img-overlay-highlight-04.png';
 import ImageOverlayHighlight05 from '../../../assets/image/img-overlay-highlight-05.png';
-import {
-  IObjHeaderHome,
-  TPropsNeedPositionTopScroll,
-} from '../../../interface';
+import { IObjHeaderHome } from '../../../interface';
 import { getObjHeaderHome } from '../../../api';
 
 const customRPSectionWrapper = customRP({
@@ -105,11 +104,8 @@ const ImgDashboardHomeHeader = tw.img`
 transition-[opacity,transform] [transform-style:preserve-3d]
 `;
 
-type TPropsCmpSectionHeaderHome = TPropsNeedPositionTopScroll;
-
-const CmpSectionHeaderHome: FC<TPropsCmpSectionHeaderHome> = ({
-  posTopScroll,
-}) => {
+const CmpSectionHeaderHome = () => {
+  const posTopScroll = usePositionScrollWindow();
   const timeoutTransition = 0;
   const [objHeaderHome, setObjHeaderHome] = useState<IObjHeaderHome>();
   const [isDonePreload, setIsDonePreload] = useState(false);
@@ -122,27 +118,23 @@ const CmpSectionHeaderHome: FC<TPropsCmpSectionHeaderHome> = ({
       flagAdditional: !!objHeaderHome,
     },
   );
-  useEffect(() => {
+  useLayoutEffect(() => {
     getObjHeaderHome().then((dataObjHeaderHome) => {
       if (dataObjHeaderHome) {
         setObjHeaderHome(dataObjHeaderHome);
+        preloadImageBySource([
+          dataObjHeaderHome.imageContent,
+          dataObjHeaderHome.introduce.iconUrl,
+        ]).then((listIsDone) => {
+          setIsDonePreload(
+            Array.isArray(listIsDone)
+              ? listIsDone.every((isDone) => isDone)
+              : false,
+          );
+        });
       }
     });
   }, []);
-  useEffect(() => {
-    if (!!objHeaderHome?.imageContent && !!objHeaderHome.introduce.iconUrl) {
-      preloadImageBySource([
-        objHeaderHome.imageContent,
-        objHeaderHome.introduce.iconUrl,
-      ]).then((listIsDone) => {
-        setIsDonePreload(
-          Array.isArray(listIsDone)
-            ? listIsDone.every((isDone) => isDone)
-            : false,
-        );
-      });
-    }
-  }, [objHeaderHome]);
   return (
     <SectionWrapper style={customRPSectionWrapper}>
       <DivWrapper>
@@ -217,12 +209,10 @@ const CmpSectionHeaderHome: FC<TPropsCmpSectionHeaderHome> = ({
                         >
                           <ImgOverlayHighlightHeaderHome
                             src={ImageOverlayHighlight05}
-                            loading="lazy"
                             alt=""
                           />
                           <ImgIconLinkBtnHeaderHome
                             src={objHeaderHome?.introduce.iconUrl}
-                            loading="lazy"
                             alt=""
                           />
                           <DivTextLinkBtnHeaderHome>
@@ -247,7 +237,6 @@ const CmpSectionHeaderHome: FC<TPropsCmpSectionHeaderHome> = ({
                                 stateTransitionImgOverlayHighlight04
                               ],
                             }}
-                            loading="eager"
                             alt=""
                           />
                         )}
@@ -267,7 +256,6 @@ const CmpSectionHeaderHome: FC<TPropsCmpSectionHeaderHome> = ({
                                 stateTransitionDivHeaderHome
                               ],
                             }}
-                            loading="eager"
                             alt=""
                           />
                         </DivWrapperAnimation>
@@ -284,4 +272,4 @@ const CmpSectionHeaderHome: FC<TPropsCmpSectionHeaderHome> = ({
   );
 };
 
-export default CmpSectionHeaderHome;
+export default memo(CmpSectionHeaderHome);

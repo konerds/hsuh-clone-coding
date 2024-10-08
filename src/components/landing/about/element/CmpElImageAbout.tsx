@@ -1,5 +1,6 @@
-import { FC, useRef, useEffect } from 'react';
-import tw from 'tailwind-styled-components';
+import { memo, useRef, useLayoutEffect } from 'react';
+
+import { tw } from '../../../../utils';
 import { Transition } from 'react-transition-group';
 import {
   customRPTransitionDuration,
@@ -7,8 +8,9 @@ import {
   customRPTransitionBackToFront,
   preloadImageBySource,
   useGetIsStartableAnimating,
+  usePositionScrollWindow,
 } from '../../../../utils';
-import { IObjAbout, TPropsNeedPositionTopScroll } from '../../../../interface';
+import { IObjAbout } from '../../../../interface';
 
 const DivContainerImageAbout = tw.div`
 [grid-area:span_1_\/_span_1_\/_span_1_\/_span_1]
@@ -18,18 +20,18 @@ const ImgImageAbout = tw.img`
 w-auto transition-[opacity,transform] [transform-style:preserve-3d]
 `;
 
-type TPropsCmpElImageAbout = TPropsNeedPositionTopScroll & {
+type TPropsCmpElImageAbout = {
   objContent: Pick<IObjAbout, 'image'>;
   isDonePreload: boolean;
   setIsDonePreload: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const CmpElImageAbout: FC<TPropsCmpElImageAbout> = ({
-  posTopScroll,
+const CmpElImageAbout = ({
   objContent,
   isDonePreload,
   setIsDonePreload,
-}) => {
+}: TPropsCmpElImageAbout) => {
+  const posTopScroll = usePositionScrollWindow();
   const timeoutTransition = 0;
   const refDivContainerImageAbout = useRef<HTMLDivElement>(null);
   const isStartableDivContainerImageAbout = useGetIsStartableAnimating(
@@ -40,7 +42,7 @@ const CmpElImageAbout: FC<TPropsCmpElImageAbout> = ({
       flagAdditional: isDonePreload,
     },
   );
-  useEffect(() => {
+  useLayoutEffect(() => {
     preloadImageBySource(objContent.image).then((isDone) => {
       setIsDonePreload(isDone);
     });
@@ -67,7 +69,6 @@ const CmpElImageAbout: FC<TPropsCmpElImageAbout> = ({
                   stateTransitionDivContainerImageAbout
                 ],
               }}
-              loading="lazy"
               alt=""
             />
           </DivContainerImageAbout>
@@ -77,4 +78,4 @@ const CmpElImageAbout: FC<TPropsCmpElImageAbout> = ({
   );
 };
 
-export default CmpElImageAbout;
+export default memo(CmpElImageAbout);

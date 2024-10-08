@@ -1,14 +1,16 @@
-import { FC, useState, useRef, useEffect } from 'react';
-import tw from 'tailwind-styled-components';
+import { memo, useState, useRef, useLayoutEffect } from 'react';
+
+import { tw } from '../../../utils';
 import {
   customRPTransitionDuration,
   customRPTransitionOpacity,
   customRPTransitionBackToFront,
   useGetIsStartableAnimating,
   preloadImageBySource,
+  usePositionScrollWindow,
 } from '../../../utils';
 import { Transition } from 'react-transition-group';
-import { IObjClient, TPropsNeedPositionTopScroll } from '../../../interface';
+import { IObjClient } from '../../../interface';
 import { getObjClient } from '../../../api';
 
 const SectionWrapper = tw.section`
@@ -47,9 +49,8 @@ const ImgLogoClient = tw.img`
 mr-[40px] w-auto max-tablet:mr-[24px] max-mobile-landscape:mr-0 max-mobile-landscape:mt-[24px]
 `;
 
-type TPropsCmpSectionClient = TPropsNeedPositionTopScroll;
-
-const CmpSectionClient: FC<TPropsCmpSectionClient> = ({ posTopScroll }) => {
+const CmpSectionClient = () => {
+  const posTopScroll = usePositionScrollWindow();
   const timeoutTransition = 0;
   const [objClient, setObjClient] = useState<IObjClient>();
   const [isDonePreload, setIsDonePreload] = useState(false);
@@ -61,20 +62,20 @@ const CmpSectionClient: FC<TPropsCmpSectionClient> = ({ posTopScroll }) => {
       flagAdditional: isDonePreload,
     },
   );
-  useEffect(() => {
+  useLayoutEffect(() => {
     getObjClient().then((dataObjClient) => {
-      setObjClient(dataObjClient);
+      if (dataObjClient) {
+        setObjClient(dataObjClient);
+        preloadImageBySource(dataObjClient.listImage).then((listIsDone) => {
+          setIsDonePreload(
+            Array.isArray(listIsDone)
+              ? listIsDone.every((isDone) => isDone)
+              : false,
+          );
+        });
+      }
     });
   }, []);
-  useEffect(() => {
-    preloadImageBySource(objClient?.listImage).then((listIsDone) => {
-      setIsDonePreload(
-        Array.isArray(listIsDone)
-          ? listIsDone.every((isDone) => isDone)
-          : false,
-      );
-    });
-  }, [objClient]);
   return (
     <SectionWrapper>
       <DivWrapper>
@@ -112,7 +113,6 @@ const CmpSectionClient: FC<TPropsCmpSectionClient> = ({ posTopScroll }) => {
                           <ImgLogoClient
                             key={idxUrlImage}
                             src={urlImage}
-                            loading="lazy"
                             alt=""
                           />
                         );
@@ -129,4 +129,4 @@ const CmpSectionClient: FC<TPropsCmpSectionClient> = ({ posTopScroll }) => {
   );
 };
 
-export default CmpSectionClient;
+export default memo(CmpSectionClient);

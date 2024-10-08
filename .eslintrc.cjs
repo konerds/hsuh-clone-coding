@@ -30,5 +30,6 @@ module.exports = {
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
     'no-empty': 'off',
+    'react-refresh/only-export-components': 'off',
   },
 };
